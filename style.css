@@ -3431,3 +3431,183 @@ body {
     padding: 10px;
   }
 }
+
+/* ====== SIMPLE FOOTER STYLES ====== */
+.simple-footer {
+  background: #4a90e2;
+  color: white;
+  margin-top: 40px;
+  padding: 30px 0;
+  text-align: center;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.footer-info p {
+  margin: 0 0 20px 0;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.footer-contact p {
+  margin: 8px 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .simple-footer {
+    padding: 20px 0;
+  }
+
+  .footer-info h3 {
+    font-size: 20px;
+  }
+
+  .footer-info p {
+    font-size: 14px;
+  }
+
+  .footer-contact p {
+    font-size: 13px;
+  }
+}
+
+/* ====== ORDER SUCCESS PAGE STYLES ====== */
+.success-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.success-card {
+  background: white;
+  padding: 40px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #27ae60;
+}
+
+.success-icon {
+  font-size: 64px;
+  color: #27ae60;
+  margin-bottom: 20px;
+}
+
+.success-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #27ae60;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.order-info {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.order-row:last-child {
+  margin-bottom: 0;
+  font-weight: bold;
+  color: #e74c3c;
+  border-top: 1px solid #dee2e6;
+  padding-top: 10px;
+}
+
+.qr-payment-info {
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.qr-payment-info h4 {
+  color: #1976d2;
+  margin-bottom: 15px;
+}
+
+.payment-details {
+  text-align: left;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.payment-amount {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-success {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #219a52;
+}
+
+.note {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.note strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Order Success Responsive */
+@media (max-width: 768px) {
+  .success-container {
+    margin: 20px auto;
+    padding: 10px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}

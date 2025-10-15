@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Bán Sách</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1><a href="index.html" class="back-btn">🏠 Trang chủ</a></h1>
+      <nav>
+        <div class="header-left">
+          <a href="profile.html" class="account-btn" id="account-btn">
+            👤 <span id="account-name">Tài khoản</span>
+          </a>
+          <a href="cart.html" class="cart-btn"
+            >🛒 Giỏ hàng <span id="cart-count">0</span></a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <!-- Chức năng tìm kiếm và lọc -->
+    <div class="search-filter">
+      <div class="controls">
+        <input id="q" type="search" placeholder="Tìm kiếm..." />
+        <select id="sort">
+          <option value="rel">Phù hợp</option>
+          <option value="price_asc">Giá tăng dần</option>
+          <option value="price_desc">Giá giảm dần</option>
+          <option value="title_asc">A → Z</option>
+          <option value="title_desc">Z → A</option>
+        </select>
+        <select id="price-filter">
+          <option value="all">Tất cả giá</option>
+          <option value="0-50000">Dưới 50.000đ</option>
+          <option value="50000-100000">50.000đ - 100.000đ</option>
+          <option value="100000-200000">100.000đ - 200.000đ</option>
+          <option value="200000-500000">200.000đ - 500.000đ</option>
+          <option value="500000-999999999">Trên 500.000đ</option>
+        </select>
+      </div>
+    </div>
+    <div class="carousel" id="myCarousel" aria-roledescription="carousel">
+      <div class="carousel-track">
+        <div class="carousel-slide is-active">
+          <img src="https://picsum.photos/1200/400?random=1" alt="Banner 1" />
+        </div>
+        <div class="carousel-slide">
+          <img src="https://picsum.photos/1200/400?random=2" alt="Banner 2" />
+        </div>
+        <div class="carousel-slide">
+          <img src="https://picsum.photos/1200/400?random=3" alt="Banner 3" />
+        </div>
+      </div>
+
+      <button class="carousel-btn prev" aria-label="Trước">‹</button>
+      <button class="carousel-btn next" aria-label="Sau">›</button>
+
+      <div class="carousel-dots" aria-label="Chọn slide" role="tablist"></div>
+    </div>
+
+    <!-- Dãy thẻ thể loại -->
+    <div class="category-tags-container">
+      <div class="category-tags" id="category-tags">
+        <!-- Categories sẽ được load từ categories.json -->
+      </div>
+    </div>
+    <!-- Danh sách sách -->
+    <main id="book-list"></main>
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="json/books.json"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

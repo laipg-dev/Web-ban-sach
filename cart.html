@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Giỏ hàng | Bookshop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1><a href="index.html" class="back-btn">🏠 Trang chủ</a></h1>
+      <nav>
+        <div class="header-left">
+          <a href="profile.html" class="account-btn" id="account-btn">
+            👤 <span id="account-name">Tài khoản</span>
+          </a>
+          <a href="cart.html" class="cart-btn"
+            >🛒 Giỏ hàng <span id="cart-count">0</span></a
+          >
+        </div>
+      </nav>
+    </header>
+    <div class="cart-page">
+      <!-- Title -->
+      <h2 class="title-cart">
+        GIỎ HÀNG <span id="cart-count-text" class="muted"></span>
+      </h2>
+
+      <!-- Body -->
+      <main class="page grid">
+        <!-- Left -->
+
+        <div>
+          <div class="card">
+            <!-- header columns -->
+            <div class="thead">
+              <div class="check">
+                <input type="checkbox" id="select-all" class="check" />
+              </div>
+              <div>
+                <span
+                  >Chọn tất cả (<span id="select-all-count">0</span> sản
+                  phẩm)</span
+                >
+              </div>
+              <div class="th-3">Số lượng</div>
+              <div class="th-4">Thành tiền</div>
+              <div></div>
+            </div>
+
+            <!-- list -->
+            <div id="cart-list" class="list"></div>
+            <div id="empty" class="empty" style="display: none">
+              Giỏ hàng trống
+            </div>
+          </div>
+        </div>
+
+        <!-- Right -->
+        <aside class="col-right">
+          <div class="card-right">
+            <div class="promo-head">
+              <span class="promo-title">THANH TOAN</span>
+              <span id="need-more" class="muted"></span>
+            </div>
+
+            <div class="totals">
+              <div class="row">
+                <span>Thành tiền</span><span id="sub-total">0 đ</span>
+              </div>
+            </div>
+
+            <button id="checkout" class="btn full" disabled>THANH TOÁN</button>
+          </div>
+        </aside>
+      </main>
+    </div>
+    <script src="cart.js"></script>
+  </body>
+</html>

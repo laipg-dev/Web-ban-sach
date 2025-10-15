@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đăng ký - BookShop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header chung -->
+    <header>
+      <h1><a href="index.html" class="back-btn">🏠 Trang chủ</a></h1>
+    </header>
+
+    <main>
+      <div class="auth-wrap">
+        <h2>Đăng ký</h2>
+
+        <div id="errBox" class="err"></div>
+
+        <div class="field">
+          <label for="username">Tên đăng nhập</label>
+          <input id="username" type="text" autocomplete="username" />
+        </div>
+
+        <div class="field pw-wrap">
+          <label for="password">Mật khẩu</label>
+          <input id="password" type="password" autocomplete="new-password" />
+          <button type="button" id="togglePw" aria-label="Hiện/ẩn mật khẩu">
+            👁️
+          </button>
+        </div>
+        <div class="field pw-wrap">
+          <label for="confirmPassword">Nhập lại mật khẩu</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+          />
+          <button type="button" id="togglePw" aria-label="Hiện/ẩn mật khẩu">
+            👁️
+          </button>
+        </div>
+
+        <div class="field">
+          <label for="fullName">Họ và tên</label>
+          <input id="fullName" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="phone">Số điện thoại</label>
+          <input id="phone" type="text" />
+        </div>
+
+        <button id="registerBtn" class="btn">Đăng ký</button>
+
+        <div class="row" style="margin-top: 14px; justify-content: center">
+          <span
+            >Đã có tài khoản?
+            <a class="link" href="login.html">Đăng nhập</a></span
+          >
+        </div>
+      </div>
+    </main>
+
+    <script src="register.js"></script>
+  </body>
+</html>

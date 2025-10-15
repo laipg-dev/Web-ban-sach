@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "name": "all",
+    "display_name": "Tất cả",
+    "icon": "https://picsum.photos/200/300?random=16",
+    "description": "Tất cả sách",
+    "status": true
+  },
+  {
+    "id": 2,
+    "name": "van-hoc",
+    "display_name": "Văn học",
+    "icon": "https://picsum.photos/200/300?random=2",
+    "description": "Sách văn học trong nước và nước ngoài",
+    "status": true
+  },
+  {
+    "id": 3,
+    "name": "kinh-te",
+    "display_name": "Kinh tế",
+    "icon": "https://picsum.photos/200/300?random=3",
+    "description": "Sách về kinh tế và kinh doanh",
+    "status": true
+  },
+  {
+    "id": 4,
+    "name": "tam-ly-ky-nang-song",
+    "display_name": "Tâm lý - Kỹ năng sống",
+    "icon": "https://picsum.photos/200/300?random=4",
+    "description": "Sách phát triển bản thân và kỹ năng sống",
+    "status": true
+  },
+  {
+    "id": 5,
+    "name": "nuoi-day-con",
+    "display_name": "Nuôi dạy con",
+    "icon": "https://picsum.photos/200/300?random=5",
+    "description": "Sách hướng dẫn nuôi dạy con cái",
+    "status": true
+  },
+  {
+    "id": 6,
+    "name": "sach-thieu-nhi",
+    "display_name": "Sách thiếu nhi",
+    "icon": "https://picsum.photos/200/300?random=6",
+    "description": "Sách dành cho trẻ em",
+    "status": true
+  },
+  {
+    "id": 7,
+    "name": "tieu-su-hoi-ky",
+    "display_name": "Tiểu sử - Hồi ký",
+    "icon": "https://picsum.photos/200/300?random=7",
+    "description": "Tiểu sử và hồi ký các nhân vật nổi tiếng",
+    "status": true
+  },
+  {
+    "id": 8,
+    "name": "giao-khoa",
+    "display_name": "Giáo khoa",
+    "icon": "https://picsum.photos/200/300?random=8",
+    "description": "Sách giáo khoa các cấp học",
+    "status": true
+  },
+  {
+    "id": 9,
+    "name": "sach-hoc-ngoai-ngu",
+    "display_name": "Sách học ngoại ngữ",
+    "icon": "https://picsum.photos/200/300?random=9",
+    "description": "Sách học tiếng Anh và các ngoại ngữ khác",
+    "status": true
+  },
+  {
+    "id": 10,
+    "name": "cong-nghe-thong-tin",
+    "display_name": "Công nghệ thông tin",
+    "icon": "https://picsum.photos/200/300?random=10",
+    "description": "Sách về lập trình, IT và công nghệ",
+    "status": true
+  },
+  {
+    "id": 11,
+    "name": "khoa-hoc-tu-nhien",
+    "display_name": "Khoa học tự nhiên",
+    "icon": "https://picsum.photos/200/300?random=11",
+    "description": "Sách về khoa học, vật lý, hóa học, sinh học",
+    "status": true
+  },
+  {
+    "id": 12,
+    "name": "suc-khoe-lam-dep",
+    "display_name": "Sức khỏe - Làm đẹp",
+    "icon": "https://picsum.photos/200/300?random=12",
+    "description": "Sách về sức khỏe và làm đẹp",
+    "status": true
+  },
+  {
+    "id": 13,
+    "name": "lich-su-dia-ly",
+    "display_name": "Lịch sử - Địa lý",
+    "icon": "https://picsum.photos/200/300?random=13",
+    "description": "Sách về lịch sử và địa lý",
+    "status": true
+  },
+  {
+    "id": 14,
+    "name": "am-thuc",
+    "display_name": "Ẩm thực",
+    "icon": "https://picsum.photos/200/300?random=14",
+    "description": "Sách nấu ăn và văn hóa ẩm thực",
+    "status": true
+  },
+  {
+    "id": 15,
+    "name": "tai-chinh-dau-tu",
+    "display_name": "Tài chính - Đầu tư",
+    "icon": "https://picsum.photos/200/300?random=15",
+    "description": "Sách về đầu tư và quản lý tài chính",
+    "status": true
+  },
+  {
+    "id": 16,
+    "name": "phap-luat",
+    "display_name": "Pháp luật",
+    "icon": "https://picsum.photos/200/300?random=16",
+    "description": "Sách về luật pháp và quy định",
+    "status": true
+  },
+  {
+    "id": 17,
+    "name": "du-lich-kham-pha",
+    "display_name": "Du lịch - Khám phá",
+    "icon": "https://picsum.photos/200/300?random=17",
+    "description": "Cẩm nang du lịch và khám phá",
+    "status": true
+  },
+  {
+    "id": 18,
+    "name": "ton-giao-tam-linh",
+    "display_name": "Tôn giáo - Tâm linh",
+    "icon": "https://picsum.photos/200/300?random=18",
+    "description": "Sách về tôn giáo và tâm linh",
+    "status": true
+  },
+  {
+    "id": 19,
+    "name": "nghe-thuat-my-thuat",
+    "display_name": "Nghệ thuật - Mỹ thuật",
+    "icon": "https://picsum.photos/200/300?random=19",
+    "description": "Sách về nghệ thuật và mỹ thuật",
+    "status": true
+  },
+  {
+    "id": 20,
+    "name": "the-thao",
+    "display_name": "Thể thao",
+    "icon": "https://picsum.photos/200/300?random=20",
+    "description": "Sách về thể thao và kỹ thuật",
+    "status": true
+  }
+]

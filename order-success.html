@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đặt hàng thành công | Bookshop</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .success-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .success-card {
+        background: white;
+        padding: 40px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-top: 5px solid #27ae60;
+      }
+
+      .success-icon {
+        font-size: 64px;
+        color: #27ae60;
+        margin-bottom: 20px;
+      }
+
+      .success-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #27ae60;
+        margin-bottom: 10px;
+      }
+
+      .success-message {
+        color: #666;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .order-info {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: left;
+      }
+
+      .order-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .order-row:last-child {
+        margin-bottom: 0;
+        font-weight: bold;
+        color: #e74c3c;
+        border-top: 1px solid #dee2e6;
+        padding-top: 10px;
+      }
+
+      .qr-payment-info {
+        background: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .qr-payment-info h4 {
+        color: #1976d2;
+        margin-bottom: 15px;
+      }
+
+      .payment-details {
+        text-align: left;
+      }
+
+      .payment-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .payment-amount {
+        font-weight: bold;
+        color: #e74c3c;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: #4a90e2;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #357abd;
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .btn-success {
+        background: #27ae60;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #219a52;
+      }
+
+      .note {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 15px;
+        border-radius: 6px;
+        margin: 20px 0;
+        text-align: left;
+      }
+
+      .note strong {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      @media (max-width: 768px) {
+        .success-container {
+          margin: 20px auto;
+          padding: 10px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1><a href="index.html" class="back-btn">🏠 Trang chủ</a></h1>
+      <nav>
+        <a href="cart.html" class="cart-btn"
+          >🛒 Giỏ hàng <span id="cart-count">0</span></a
+        >
+      </nav>
+    </header>
+
+    <div class="success-container">
+      <div class="success-card">
+        <div class="success-icon">✅</div>
+        <h1 class="success-title">Đặt hàng thành công!</h1>
+        <p class="success-message">
+          Cảm ơn bạn đã mua sắm tại Bookshop. Đơn hàng của bạn đã được tiếp nhận
+          và đang được xử lý.
+        </p>
+
+        <div class="order-info">
+          <div class="order-row">
+            <span>Mã đơn hàng:</span>
+            <span id="order-id">--</span>
+          </div>
+          <div class="order-row">
+            <span>Thời gian đặt:</span>
+            <span id="order-time">--</span>
+          </div>
+          <div class="order-row">
+            <span>Phương thức thanh toán:</span>
+            <span id="payment-method">--</span>
+          </div>
+          <div class="order-row">
+            <span>Tổng tiền:</span>
+            <span id="total-amount">--</span>
+          </div>
+        </div>
+
+        <!-- QR Payment Information (shown only for QR payment) -->
+        <div
+          id="qr-payment-section"
+          class="qr-payment-info"
+          style="display: none"
+        >
+          <h4>💳 Thông tin chuyển khoản</h4>
+          <div class="payment-details">
+            <div class="payment-row">
+              <span>Ngân hàng:</span>
+              <strong>Vietcombank</strong>
+            </div>
+            <div class="payment-row">
+              <span>Số tài khoản:</span>
+              <strong>0123456789</strong>
+            </div>
+            <div class="payment-row">
+              <span>Tên tài khoản:</span>
+              <strong>BOOKSHOP STORE</strong>
+            </div>
+            <div class="payment-row">
+              <span>Số tiền cần chuyển:</span>
+              <span class="payment-amount" id="transfer-amount">--</span>
+            </div>
+            <div class="payment-row">
+              <span>Nội dung chuyển khoản:</span>
+              <strong id="transfer-content">--</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- COD Information -->
+        <div id="cod-payment-section" class="note" style="display: none">
+          <strong>📦 Thanh toán khi nhận hàng (COD)</strong>
+          Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng từ shipper. Vui
+          lòng chuẩn bị đủ tiền mặt theo đúng số tiền trên.
+        </div>
+
+        <div class="note">
+          <strong>📞 Liên hệ hỗ trợ:</strong>
+          Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, vui lòng liên hệ hotline:
+          <strong>1900-xxxx</strong> hoặc email:
+          <strong>support@bookshop.com</strong>
+        </div>
+
+        <div class="action-buttons">
+          <a href="profile.html#orders" class="btn btn-primary">
+            📋 Xem đơn hàng
+          </a>
+          <a href="index.html" class="btn btn-secondary">
+            🏠 Tiếp tục mua sắm
+          </a>
+          <button id="print-order" class="btn btn-success">
+            🖨️ In đơn hàng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Constants
+      const fmt = (n) => (n || 0).toLocaleString("vi-VN") + "đ";
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadOrderInfo();
+        updateCartBadge();
+        setupPrintButton();
+      });
+
+      // Load order information
+      function loadOrderInfo() {
+        try {
+          const orderSuccess = JSON.parse(
+            localStorage.getItem("order_success") || "{}"
+          );
+
+          if (!orderSuccess.orderId) {
+            // Nếu không có thông tin đơn hàng, chuyển về trang chủ
+            alert("Không tìm thấy thông tin đơn hàng!");
+            window.location.href = "index.html";
+            return;
+          }
+
+          // Hiển thị thông tin đơn hàng
+          document.getElementById("order-id").textContent =
+            orderSuccess.orderId;
+          document.getElementById("order-time").textContent =
+            new Date().toLocaleString("vi-VN");
+          document.getElementById("total-amount").textContent = fmt(
+            orderSuccess.totalAmount
+          );
+
+          // Hiển thị thông tin theo phương thức thanh toán
+          if (orderSuccess.paymentMethod === "qr") {
+            document.getElementById("payment-method").textContent =
+              "Chuyển khoản QR";
+            document.getElementById("qr-payment-section").style.display =
+              "block";
+            document.getElementById("transfer-amount").textContent = fmt(
+              orderSuccess.totalAmount
+            );
+            document.getElementById(
+              "transfer-content"
+            ).textContent = `THANHTOAN ${orderSuccess.orderId}`;
+          } else if (orderSuccess.paymentMethod === "cod") {
+            document.getElementById("payment-method").textContent =
+              "Thanh toán khi nhận hàng (COD)";
+            document.getElementById("cod-payment-section").style.display =
+              "block";
+          }
+
+          // Xóa thông tin đơn hàng khỏi localStorage sau khi hiển thị
+          localStorage.removeItem("order_success");
+        } catch (error) {
+          console.error("Error loading order info:", error);
+          alert("Có lỗi xảy ra khi tải thông tin đơn hàng!");
+          window.location.href = "index.html";
+        }
+      }
+
+      // Update cart badge
+      function updateCartBadge() {
+        try {
+          const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
+          const badge = document.getElementById("cart-count");
+          if (badge) {
+            badge.textContent = cart.reduce(
+              (sum, item) => sum + (item.quantity || 0),
+              0
+            );
+          }
+        } catch (error) {
+          console.error("Error updating cart badge:", error);
+        }
+      }
+
+      // Setup print button
+      function setupPrintButton() {
+        document
+          .getElementById("print-order")
+          .addEventListener("click", function () {
+            window.print();
+          });
+      }
+
+      // Print styles
+      const printStyles = `
+            <style>
+                @media print {
+                    body * { visibility: hidden; }
+                    .success-container, .success-container * { visibility: visible; }
+                    .success-container { position: absolute; left: 0; top: 0; width: 100%; }
+                    .action-buttons { display: none !important; }
+                    header { display: none !important; }
+                }
+            </style>
+        `;
+      document.head.insertAdjacentHTML("beforeend", printStyles);
+    </script>
+  </body>
+</html>

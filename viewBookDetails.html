@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chi tiết sách</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1><a href="index.html" class="back-btn">🏠 Trang chủ</a></h1>
+      <nav>
+        <div class="header-left">
+          <a href="profile.html" class="account-btn" id="account-btn">
+            👤 <span id="account-name">Tài khoản</span>
+          </a>
+          <a href="cart.html" class="cart-btn"
+            >🛒 Giỏ hàng <span id="cart-count">0</span></a
+          >
+        </div>
+      </nav>
+    </header>
+    <!-- Chi tiết sách với title có gradient hồng -->
+    <div class="book-detail-container">
+      <main class="book-detail">
+        <div class="detail-grid">
+          <!-- LEFT: Gallery + actions + policy -->
+          <aside class="detail-left">
+            <div class="gallery">
+              <img id="main-img" src="" alt="Bìa sách" />
+              <div class="thumbs" id="thumbs"></div>
+            </div>
+
+            <div class="buy-actions">
+              <button id="btn-add" class="add-to-cart-btn">
+                <span class="cart-icon">🛒</span>
+                Thêm vào giỏ hàng
+              </button>
+              <button id="btn-buy" class="view-btn">Mua ngay</button>
+            </div>
+
+            <div class="policy">
+              <h4>Chính sách ưu đãi</h4>
+              <ul>
+                <li>🚚 Giao nhanh & uy tín</li>
+                <li>🔁 Đổi trả miễn phí toàn quốc</li>
+                <li>🏷️ Ưu đãi khi mua số lượng lớn</li>
+              </ul>
+            </div>
+          </aside>
+
+          <!-- RIGHT: Thông tin chi tiết -->
+          <section class="detail-right">
+            <!-- Thông tin sách và giá -->
+            <div class="card price-card">
+              <div id="book-price" class="price-container">
+                <!-- JS render book title & price here -->
+              </div>
+            </div>
+
+            <div class="card info-card">
+              <h3>Thông tin chi tiết</h3>
+              <dl id="info-list" class="info-grid"><!-- JS render --></dl>
+            </div>
+
+            <div class="card desc-card">
+              <h3>Mô tả sản phẩm</h3>
+              <div id="book-desc" class="desc"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span>© 2025 BookShop</span>
+        <span><a href="#">Điều khoản</a> · <a href="#">Bảo mật</a></span>
+      </div>
+    </footer>
+
+    <script src="viewBookDetails.js"></script>
+  </body>
+</html>

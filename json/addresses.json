@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "receiver_name": "Lai Pham",
+    "phone": "0901234567",
+    "address_line1": "44 Phu Dien",
+    "ward": "Phu Dien",
+    "district": "Bac Tu Liem",
+    "province": "Ha Noi",
+    "is_default": true,
+    "created_at": "2025-09-24T09:05:00Z",
+    "updated_at": "2025-09-24T09:05:00Z"
+  },
+  {
+    "id": 2,
+    "user_id": 1,
+    "receiver_name": "Lai Pham (Office)",
+    "phone": "0901234567",
+    "address_line1": "1 Dai Co Viet",
+    "ward": "Bach Khoa",
+    "district": "Hai Ba Trung",
+    "province": "Ha Noi",
+    "is_default": false,
+    "created_at": "2025-09-24T09:05:10Z",
+    "updated_at": "2025-09-24T09:05:10Z"
+  },
+  {
+    "id": 3,
+    "user_id": 1,
+    "receiver_name": "Thu Nguyen",
+    "phone": "0912345678",
+    "address_line1": "12 Nguyen Du",
+    "ward": "Ben Nghe",
+    "district": "Quan 1",
+    "province": "TP Ho Chi Minh",
+    "is_default": false,
+    "created_at": "2025-09-24T09:05:20Z",
+    "updated_at": "2025-09-24T09:05:20Z"
+  },
+  {
+    "id": 4,
+    "user_id": 2,
+    "receiver_name": "Thu Nguyen (Work)",
+    "phone": "0912345678",
+    "address_line1": "456 Le Loi",
+    "ward": "Ben Thanh",
+    "district": "Quan 1",
+    "province": "TP Ho Chi Minh",
+    "is_default": true,
+    "created_at": "2025-09-24T09:06:00Z",
+    "updated_at": "2025-09-24T09:06:00Z"
+  },
+  {
+    "id": 5,
+    "user_id": 3,
+    "receiver_name": "Site Admin",
+    "phone": "0988001122",
+    "address_line1": "123 Tran Hung Dao",
+    "ward": "Cua Dong",
+    "district": "Hoan Kiem",
+    "province": "Ha Noi",
+    "is_default": true,
+    "created_at": "2025-09-24T09:07:00Z",
+    "updated_at": "2025-09-24T09:07:00Z"
+  }
+]

@@ -1,0 +1,138 @@
+[
+  {
+    "id": 1,
+    "order_id": 1,
+    "book_id": 1,
+    "quantity": 1,
+    "price": 120000,
+    "note": null
+  },
+  {
+    "id": 2,
+    "order_id": 1,
+    "book_id": 2,
+    "quantity": 1,
+    "price": 135000,
+    "note": "Gói quà"
+  },
+  {
+    "id": 3,
+    "order_id": 2,
+    "book_id": 1,
+    "quantity": 1,
+    "price": 120000,
+    "note": null
+  },
+  {
+    "id": 4,
+    "order_id": 3,
+    "book_id": 3,
+    "quantity": 2,
+    "price": 98000,
+    "note": null
+  },
+  {
+    "id": 5,
+    "order_id": 3,
+    "book_id": 4,
+    "quantity": 3,
+    "price": 25000,
+    "note": "Bộ sách giáo khoa"
+  },
+  {
+    "id": 6,
+    "order_id": 4,
+    "book_id": 5,
+    "quantity": 1,
+    "price": 89000,
+    "note": null
+  },
+  {
+    "id": 7,
+    "order_id": 5,
+    "book_id": 6,
+    "quantity": 2,
+    "price": 65000,
+    "note": null
+  },
+  {
+    "id": 8,
+    "order_id": 5,
+    "book_id": 7,
+    "quantity": 1,
+    "price": 50000,
+    "note": "Khuyến mãi"
+  },
+  {
+    "id": 9,
+    "order_id": 6,
+    "book_id": 8,
+    "quantity": 1,
+    "price": 180000,
+    "note": null
+  },
+  {
+    "id": 10,
+    "order_id": 6,
+    "book_id": 9,
+    "quantity": 2,
+    "price": 70000,
+    "note": "Combo sách"
+  },
+  {
+    "id": 11,
+    "order_id": 7,
+    "book_id": 10,
+    "quantity": 1,
+    "price": 95000,
+    "note": null
+  },
+  {
+    "id": 12,
+    "order_id": 8,
+    "book_id": 11,
+    "quantity": 1,
+    "price": 155000,
+    "note": null
+  },
+  {
+    "id": 13,
+    "order_id": 8,
+    "book_id": 12,
+    "quantity": 1,
+    "price": 120000,
+    "note": "Tặng bookmark"
+  },
+  {
+    "id": 14,
+    "order_id": 9,
+    "book_id": 13,
+    "quantity": 1,
+    "price": 165000,
+    "note": null
+  },
+  {
+    "id": 15,
+    "order_id": 10,
+    "book_id": 14,
+    "quantity": 2,
+    "price": 85000,
+    "note": null
+  },
+  {
+    "id": 16,
+    "order_id": 11,
+    "book_id": 15,
+    "quantity": 3,
+    "price": 120000,
+    "note": "Bộ truyện"
+  },
+  {
+    "id": 17,
+    "order_id": 12,
+    "book_id": 16,
+    "quantity": 1,
+    "price": 380000,
+    "note": "Sách chuyên ngành"
+  }
+]

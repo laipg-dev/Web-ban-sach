@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chỉnh sửa thông tin cá nhân - BookShop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1><a href="index.html" class="back-btn">🏠 Trang chủ</a></h1>
+      <nav>
+        <div class="header-left">
+          <a href="profile.html" class="account-btn" id="account-btn">
+            👤 <span id="account-name">Tài khoản</span>
+          </a>
+          <a href="cart.html" class="cart-btn"
+            >🛒 Giỏ hàng <span id="cart-count">0</span></a
+          >
+        </div>
+      </nav>
+    </header>
+
+    <main class="profile-main">
+      <div class="profile-container">
+        <!-- Sidebar Menu -->
+        <aside class="profile-sidebar">
+          <div class="profile-user-info">
+            <div class="user-details">
+              <h3 id="sidebar-username">laipg</h3>
+              <div class="edit-profile-btn">✏️ Sửa Hồ Sơ</div>
+            </div>
+          </div>
+
+          <nav class="profile-nav">
+            <div class="nav-section">
+              <div class="nav-item active" data-section="profile">
+                <span class="nav-icon">👤</span>
+                <span>Tài Khoản Của Tôi</span>
+              </div>
+              <div class="nav-subitems">
+                <div class="nav-subitem active" data-tab="personal">Hồ Sơ</div>
+                <div class="nav-subitem" data-tab="address">Địa Chỉ</div>
+                <div class="nav-subitem" data-tab="password">Đổi Mật Khẩu</div>
+              </div>
+            </div>
+
+            <div class="nav-item" data-section="orders">
+              <span class="nav-icon">📋</span>
+              <span>Đơn Mua</span>
+            </div>
+            <div class="nav-item" data-section="logout">
+              <span class="nav-icon">👤</span>
+              <span>Đăng xuất</span>
+            </div>
+          </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="profile-content">
+          <div id="errBox" class="err"></div>
+          <div id="successBox" class="success"></div>
+
+          <!-- Personal Info Tab -->
+          <div class="content-tab active" id="personal-tab">
+            <div class="tab-header">
+              <h2>Hồ Sơ Của Tôi</h2>
+              <p class="tab-subtitle">
+                Quản lý thông tin hồ sơ để bảo mật tài khoản
+              </p>
+            </div>
+
+            <form id="profile-form" class="profile-form-horizontal">
+              <div class="form-left">
+                <div class="form-row">
+                  <label for="username">Tên đăng nhập</label>
+                  <div class="form-control">
+                    <span id="username" class="readonly-text">laipg</span>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <label for="fullname">Tên</label>
+                  <div class="form-control">
+                    <input
+                      id="fullname"
+                      name="fullname"
+                      type="text"
+                      autocomplete="name"
+                    />
+                    <div
+                      class="address-field-error"
+                      style="display: none"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <label for="phone">Số điện thoại</label>
+                  <div class="form-control">
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      autocomplete="tel"
+                      placeholder="*******652"
+                    />
+                    <div
+                      class="address-field-error"
+                      style="display: none"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-save">Lưu</button>
+            </div>
+          </div>
+
+          <!-- Address Tab -->
+          <section id="address-tab" class="content-tab">
+            <div class="address-header">
+              <div class="title-address">Địa chỉ của tôi</div>
+              <div class="btn-add-address">
+                <div style="display: flex">
+                  <button id="add-address-btn" class="btn-new-address">
+                    <div class="title-btn-new-address">
+                      <div class="icon-btn-new-address">➕</div>
+                    </div>
+                    <div class="text-btn-new-address">Thêm địa chỉ mới</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="address-list" class="address-list">
+              <!-- JS render ở đây -->
+            </div>
+          </section>
+
+          <!-- Password Tab -->
+          <div class="content-tab" id="password-tab">
+            <div class="tab-header">
+              <h2>🔐 Đổi Mật Khẩu</h2>
+              <p class="tab-subtitle">
+                Để bảo mật tài khoản, vui lòng không chia sẻ mật khẩu cho người
+                khác. Mật khẩu nên có ít nhất 8 ký tự và bao gồm chữ hoa, chữ
+                thường, số và ký tự đặc biệt.
+              </p>
+            </div>
+            <form id="password-form" class="password-form-horizontal">
+              <div class="form-left">
+                <div class="form-row">
+                  <label for="current-password">
+                    <i class="icon">🔒</i> Mật khẩu hiện tại
+                  </label>
+                  <div class="form-control">
+                    <input
+                      id="current-password"
+                      name="current-password"
+                      type="password"
+                      autocomplete="current-password"
+                      placeholder="Nhập mật khẩu hiện tại"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      data-target="current-password"
+                    >
+                      👁️
+                    </button>
+                    <div
+                      class="address-field-error"
+                      style="display: none"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <label for="new-password">
+                    <i class="icon">🆕</i> Mật khẩu mới
+                  </label>
+                  <div class="form-control">
+                    <input
+                      id="new-password"
+                      name="new-password"
+                      type="password"
+                      autocomplete="new-password"
+                      placeholder="Nhập mật khẩu mới"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      data-target="new-password"
+                    >
+                      👁️
+                    </button>
+                    <div
+                      class="address-field-error"
+                      style="display: none"
+                    ></div>
+                  </div>
+
+                  <!-- Password Strength Indicator -->
+                  <div class="password-strength" id="password-strength">
+                    <div class="strength-bar">
+                      <div class="strength-fill" id="strength-fill"></div>
+                    </div>
+                    <div class="strength-text" id="strength-text">
+                      Độ mạnh mật khẩu
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <label for="confirm-password">
+                    <i class="icon">✅</i> Nhập lại mật khẩu mới
+                  </label>
+                  <div class="form-control">
+                    <input
+                      id="confirm-password"
+                      name="confirm-password"
+                      type="password"
+                      autocomplete="new-password"
+                      placeholder="Xác nhận mật khẩu mới"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      data-target="confirm-password"
+                    >
+                      👁️
+                    </button>
+                    <div
+                      class="address-field-error"
+                      style="display: none"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-save-password">
+                💾 Cập nhật mật khẩu
+              </button>
+            </div>
+          </div>
+
+          <!-- Orders Tab -->
+          <div class="content-tab" id="orders-tab">
+            <div class="tab-header">
+              <h2>📋 Đơn Mua Của Tôi</h2>
+              <p class="tab-subtitle">
+                Theo dõi và quản lý các đơn hàng đã mua
+              </p>
+            </div>
+
+            <!-- Order Status Filter -->
+            <div class="order-status-filter">
+              <button class="status-btn active" data-status="all">
+                Tất cả
+              </button>
+              <button class="status-btn" data-status="pending">
+                Chờ xác nhận
+              </button>
+              <button class="status-btn" data-status="processing">
+                Chờ lấy hàng
+              </button>
+              <button class="status-btn" data-status="shipping">
+                Đang giao
+              </button>
+              <button class="status-btn" data-status="delivered">
+                Đã giao
+              </button>
+              <button class="status-btn" data-status="cancelled">Đã hủy</button>
+            </div>
+
+            <!-- Orders List -->
+            <div id="orders-list" class="orders-list">
+              <!-- Orders will be rendered here by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="orders-empty" class="orders-empty" style="display: none">
+              <div class="empty-icon">📦</div>
+              <h3>Chưa có đơn hàng nào</h3>
+              <p>Bạn chưa có đơn hàng nào. Hãy mua sắm ngay!</p>
+              <a href="index.html" class="btn btn-primary">Mua sắm ngay</a>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span>© 2025 BookShop</span>
+        <span><a href="#">Điều khoản</a> · <a href="#">Bảo mật</a></span>
+      </div>
+    </footer>
+
+    <!-- 📌 Modal thêm/sửa địa chỉ -->
+    <div id="address-modal" class="modal" style="display: none">
+      <div id="modal-overlay" class="modal-overlay"></div>
+      <div class="modal-content">
+        <button id="modal-close" class="modal-close">✖</button>
+        <h3 id="modal-title"></h3>
+        <form id="address-form" class="address-form">
+          <div class="form-field">
+            <input
+              id="address-name"
+              name="name"
+              placeholder="Họ và tên người nhận"
+              required
+            />
+            <div class="address-field-error" style="display: none"></div>
+          </div>
+
+          <div class="form-field">
+            <input
+              id="address-phone"
+              name="phone"
+              placeholder="Số điện thoại"
+              required
+            />
+            <div class="address-field-error" style="display: none"></div>
+          </div>
+
+          <div class="form-field">
+            <input
+              id="address-street"
+              name="street"
+              placeholder="Số nhà, đường"
+              required
+            />
+            <div class="address-field-error" style="display: none"></div>
+          </div>
+
+          <div class="form-field">
+            <input id="address-ward" name="ward" placeholder="Phường / Xã" />
+            <div class="address-field-error" style="display: none"></div>
+          </div>
+
+          <div class="form-field">
+            <input
+              id="address-city"
+              name="city"
+              placeholder="Tỉnh / Thành phố"
+              required
+            />
+            <div class="address-field-error" style="display: none"></div>
+          </div>
+
+          <div class="form-field">
+            <input
+              id="address-district"
+              name="district"
+              placeholder="Quận / Huyện"
+              required
+            />
+            <div class="address-field-error" style="display: none"></div>
+          </div>
+
+          <label class="chk">
+            <input type="checkbox" id="address-default" name="isDefault" /> Đặt
+            làm mặc định
+          </label>
+
+          <div class="modal-actions">
+            <button type="button" id="btn-cancel" class="btn outline">
+              Hủy
+            </button>
+            <button type="submit" class="btn primary">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="profile.js"></script>
+  </body>
+</html>

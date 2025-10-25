@@ -1,0 +1,79 @@
+[
+  {
+    "category_id": 2,
+    "default_margin": 25,
+    "product_margins": {
+      "1": 30,
+      "2": 20
+    }
+  },
+  {
+    "category_id": 3,
+    "default_margin": 30,
+    "product_margins": {
+      "3": 35
+    }
+  },
+  {
+    "category_id": 4,
+    "default_margin": 28,
+    "product_margins": {}
+  },
+  {
+    "category_id": 5,
+    "default_margin": 25,
+    "product_margins": {}
+  },
+  {
+    "category_id": 6,
+    "default_margin": 22,
+    "product_margins": {
+      "1": 30
+    }
+  },
+  {
+    "category_id": 7,
+    "default_margin": 20,
+    "product_margins": {}
+  },
+  {
+    "category_id": 8,
+    "default_margin": 20,
+    "product_margins": {}
+  },
+  {
+    "category_id": 9,
+    "default_margin": 25,
+    "product_margins": {}
+  },
+  {
+    "category_id": 10,
+    "default_margin": 20,
+    "product_margins": {}
+  },
+  {
+    "category_id": 11,
+    "default_margin": 23,
+    "product_margins": {}
+  },
+  {
+    "category_id": 12,
+    "default_margin": 20,
+    "product_margins": {}
+  },
+  {
+    "category_id": 13,
+    "default_margin": 22,
+    "product_margins": {}
+  },
+  {
+    "category_id": 14,
+    "default_margin": 18,
+    "product_margins": {}
+  },
+  {
+    "category_id": 15,
+    "default_margin": 25,
+    "product_margins": {}
+  }
+]

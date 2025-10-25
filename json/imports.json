@@ -1,0 +1,69 @@
+[
+  {
+    "id": 1,
+    "import_date": "2025-10-01",
+    "note": "Nhập hàng đầu tháng 10",
+    "status": "completed",
+    "created_by": 3,
+    "created_at": "2025-10-01T08:00:00Z",
+    "completed_at": "2025-10-01T09:30:00Z",
+    "items": [
+      {
+        "product_id": 1,
+        "quantity": 50,
+        "import_price": 60000
+      },
+      {
+        "product_id": 2,
+        "quantity": 30,
+        "import_price": 150000
+      },
+      {
+        "product_id": 3,
+        "quantity": 40,
+        "import_price": 70000
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "import_date": "2025-10-15",
+    "note": "Nhập bổ sung sách thiếu nhi",
+    "status": "completed",
+    "created_by": 3,
+    "created_at": "2025-10-15T10:00:00Z",
+    "completed_at": "2025-10-15T11:00:00Z",
+    "items": [
+      {
+        "product_id": 1,
+        "quantity": 30,
+        "import_price": 62000
+      },
+      {
+        "product_id": 6,
+        "quantity": 25,
+        "import_price": 85000
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "import_date": "2025-10-25",
+    "note": "Phiếu nhập nháp - chưa hoàn thành",
+    "status": "draft",
+    "created_by": 3,
+    "created_at": "2025-10-25T14:00:00Z",
+    "items": [
+      {
+        "product_id": 4,
+        "quantity": 20,
+        "import_price": 120000
+      },
+      {
+        "product_id": 5,
+        "quantity": 15,
+        "import_price": 90000
+      }
+    ]
+  }
+]

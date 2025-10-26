@@ -478,24 +478,24 @@
                 </div>
                 <div class="form-group">
                     <label>Loại sản phẩm *</label>
-                    <select id="product-categories" multiple style="height: 100px;">
-                    </select>
-                    <small>Giữ Ctrl để chọn nhiều loại</small>
+                    <div id="product-categories" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; max-height: 150px; overflow-y: auto; background: #f9f9f9;">
+                        <!-- Categories will be populated by JavaScript -->
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Tác giả (ngăn cách bởi dấu phẩy)</label>
                     <input type="text" id="product-authors" placeholder="Tác giả 1, Tác giả 2">
                 </div>
                 <div class="form-group">
-                    <label>Hình ảnh sách *</label>
+                    <label>Hình ảnh sách</label>
                     <div style="display: flex; gap: 10px; align-items: start;">
                         <div style="flex: 1;">
-                            <input type="text" id="product-image" placeholder="Nhập URL hình ảnh hoặc upload file" required onchange="previewProductImage()">
+                            <input type="text" id="product-image" placeholder="Nhập URL hình ảnh hoặc upload file (để trống sẽ dùng ảnh mặc định)" onchange="previewProductImage()">
                             <small>Hoặc upload file:</small>
                             <input type="file" id="product-image-file" accept="image/*" onchange="handleProductImageUpload(event)" style="margin-top: 5px;">
                         </div>
                         <div id="product-image-preview" style="width: 120px; height: 160px; border: 2px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f8f9fa;">
-                            <span style="color: #999; font-size: 12px; text-align: center; padding: 10px;">Preview</span>
+                            <img src="https://via.placeholder.com/200x300/e0e0e0/666666?text=Kh%C3%B4ng+c%C3%B3+%E1%BA%A3nh" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                     </div>
                 </div>

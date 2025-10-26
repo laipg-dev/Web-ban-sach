@@ -1,6 +1,5 @@
-// Mã JavaScript Quản trị viên
-// Hằng số - Ảnh mặc định cho sản phẩm
-const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/200x300/e0e0e0/666666?text=Kh%C3%B4ng+c%C3%B3+%E1%BA%A3nh';
+
+const DEFAULT_PRODUCT_IMAGE = 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop';
 
 // Lưu trữ dữ liệu
 let users = [];
@@ -94,21 +93,50 @@ async function handleLogin(e) {
 // Tải tất cả dữ liệu từ các file JSON
 async function loadAllData() {
     try {
-        const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
-            fetch('../json/users.json'),
-            fetch('../json/books.json'),
-            fetch('../json/categories.json'),
-            fetch('../json/orders.json'),
-            fetch('../json/order_details.json'),
-            fetch('../json/addresses.json')
-        ]);
+        // Kiểm tra localStorage trước, nếu có thì dùng localStorage
+        const localBooks = localStorage.getItem('admin_books');
+        const localCategories = localStorage.getItem('admin_categories');
+        const localUsers = localStorage.getItem('admin_users');
+        const localOrders = localStorage.getItem('admin_orders');
+        const localOrderDetails = localStorage.getItem('admin_order_details');
+        const localAddresses = localStorage.getItem('admin_addresses');
         
-        users = await usersRes.json();
-        books = await booksRes.json();
-        categories = await categoriesRes.json();
-        orders = await ordersRes.json();
-        orderDetails = await orderDetailsRes.json();
-        addresses = await addressesRes.json();
+        if (localBooks && localCategories && localUsers) {
+            // Nếu đã có dữ liệu trong localStorage, dùng nó
+            books = JSON.parse(localBooks);
+            categories = JSON.parse(localCategories);
+            users = JSON.parse(localUsers);
+            orders = localOrders ? JSON.parse(localOrders) : [];
+            orderDetails = localOrderDetails ? JSON.parse(localOrderDetails) : [];
+            addresses = localAddresses ? JSON.parse(localAddresses) : [];
+            console.log('Đã tải dữ liệu từ localStorage');
+        } else {
+            // Nếu chưa có, load từ JSON file và lưu vào localStorage
+            const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
+                fetch('../json/users.json'),
+                fetch('../json/books.json'),
+                fetch('../json/categories.json'),
+                fetch('../json/orders.json'),
+                fetch('../json/order_details.json'),
+                fetch('../json/addresses.json')
+            ]);
+            
+            users = await usersRes.json();
+            books = await booksRes.json();
+            categories = await categoriesRes.json();
+            orders = await ordersRes.json();
+            orderDetails = await orderDetailsRes.json();
+            addresses = await addressesRes.json();
+            
+            // Lưu vào localStorage lần đầu
+            saveData('books', books);
+            saveData('categories', categories);
+            saveData('users', users);
+            saveData('orders', orders);
+            saveData('order_details', orderDetails);
+            saveData('addresses', addresses);
+            console.log('Đã tải dữ liệu từ JSON files và lưu vào localStorage');
+        }
         
         // Tải hoặc khởi tạo dữ liệu bổ sung
         await loadImports();
@@ -523,13 +551,27 @@ function showAddProductModal() {
     document.getElementById('product-id').value = '';
     document.getElementById('product-status').checked = true;
     
-    // Reset xem trước ảnh
+    // Reset input file
+    const fileInput = document.getElementById('product-image-file');
+    if (fileInput) {
+        fileInput.value = '';
+    }
+    
+    // Điền sẵn URL ảnh mặc định và hiển thị xem trước
+    document.getElementById('product-image').value = DEFAULT_PRODUCT_IMAGE;
     document.getElementById('product-image-preview').innerHTML = `<img src="${DEFAULT_PRODUCT_IMAGE}" style="width: 100%; height: 100%; object-fit: cover;">`;
     
-    // Đổ dữ liệu cho loại sản phẩm
-    const catSelect = document.getElementById('product-categories');
-    catSelect.innerHTML = categories.filter(c => c.id !== 1).map(cat => 
-        `<option value="${cat.id}">${cat.display_name}</option>`
+    // Tạo checkbox list cho loại sản phẩm
+    const catContainer = document.getElementById('product-categories');
+    catContainer.innerHTML = categories.filter(c => c.id !== 1).map(cat => 
+        `<div style="margin-bottom: 8px;">
+            <label style="display: flex; align-items: center; cursor: pointer; padding: 5px; border-radius: 4px; transition: background 0.2s;" 
+                   onmouseover="this.style.background='#e3f2fd'" 
+                   onmouseout="this.style.background='transparent'">
+                <input type="checkbox" name="product-category" value="${cat.id}" style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
+                <span style="font-size: 14px;">${cat.display_name}</span>
+            </label>
+        </div>`
     ).join('');
     
     openModal('productModal');
@@ -556,10 +598,19 @@ function editProduct(bookId) {
         document.getElementById('product-image-preview').innerHTML = 
             `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'" style="width: 100%; height: 100%; object-fit: cover;">`;
         
-        // Đổ dữ liệu và chọn loại sản phẩm
-        const catSelect = document.getElementById('product-categories');
-        catSelect.innerHTML = categories.filter(c => c.id !== 1).map(cat => 
-            `<option value="${cat.id}" ${book.category_ids?.includes(cat.id) ? 'selected' : ''}>${cat.display_name}</option>`
+        // Tạo checkbox list và check các loại đã chọn
+        const catContainer = document.getElementById('product-categories');
+        catContainer.innerHTML = categories.filter(c => c.id !== 1).map(cat => 
+            `<div style="margin-bottom: 8px;">
+                <label style="display: flex; align-items: center; cursor: pointer; padding: 5px; border-radius: 4px; transition: background 0.2s;" 
+                       onmouseover="this.style.background='#e3f2fd'" 
+                       onmouseout="this.style.background='transparent'">
+                    <input type="checkbox" name="product-category" value="${cat.id}" 
+                           ${book.category_ids?.includes(cat.id) ? 'checked' : ''} 
+                           style="margin-right: 8px; width: 18px; height: 18px; cursor: pointer;">
+                    <span style="font-size: 14px;">${cat.display_name}</span>
+                </label>
+            </div>`
         ).join('');
         
         openModal('productModal');
@@ -606,11 +657,25 @@ function handleProductImageUpload(event) {
     }
 }
 
+// Hàm sử dụng ảnh mặc định
+function useDefaultImage() {
+    document.getElementById('product-image').value = DEFAULT_PRODUCT_IMAGE;
+    document.getElementById('product-image-preview').innerHTML = 
+        `<img src="${DEFAULT_PRODUCT_IMAGE}" style="width: 100%; height: 100%; object-fit: cover;">`;
+    // Reset file input
+    const fileInput = document.getElementById('product-image-file');
+    if (fileInput) {
+        fileInput.value = '';
+    }
+}
+
+
 function saveProduct(e) {
     e.preventDefault();
     
     const id = document.getElementById('product-id').value;
-    const selectedCategories = Array.from(document.getElementById('product-categories').selectedOptions).map(opt => parseInt(opt.value));
+    // Lấy các checkbox đã chọn
+    const selectedCategories = Array.from(document.querySelectorAll('input[name="product-category"]:checked')).map(cb => parseInt(cb.value));
     const authors = document.getElementById('product-authors').value.split(',').map(a => a.trim()).filter(a => a);
     
     const productData = {
@@ -628,20 +693,26 @@ function saveProduct(e) {
         updated_at: new Date().toISOString()
     };
     
+    console.log('Product data:', productData);
+    
     if (id) {
         // Cập nhật
         const book = books.find(b => b.id === parseInt(id));
         if (book) {
             Object.assign(book, productData);
+            console.log('Đã cập nhật sản phẩm:', book);
         }
     } else {
         // Thêm mới
-        const newId = Math.max(...books.map(b => b.id)) + 1;
-        books.push({
+        const newId = books.length > 0 ? Math.max(...books.map(b => b.id)) + 1 : 1;
+        const newBook = {
             id: newId,
             ...productData,
             created_at: new Date().toISOString()
-        });
+        };
+        books.push(newBook);
+        console.log('Đã thêm sản phẩm mới:', newBook);
+        console.log('Tổng số sản phẩm:', books.length);
     }
     
     saveData('books', books);

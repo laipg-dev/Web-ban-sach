@@ -66,7 +66,7 @@ async function handleLogin(e) {
     const errorDiv = document.getElementById('error-message');
 
     try {
-        const response = await fetch('json/users.json');
+        const response = await fetch('../json/users.json');
         const usersData = await response.json();
         
         const admin = usersData.find(u => 
@@ -85,6 +85,7 @@ async function handleLogin(e) {
             errorDiv.style.display = 'block';
         }
     } catch (error) {
+        console.error('Lỗi đăng nhập:', error);
         errorDiv.textContent = 'Có lỗi xảy ra. Vui lòng thử lại!';
         errorDiv.style.display = 'block';
     }
@@ -94,12 +95,12 @@ async function handleLogin(e) {
 async function loadAllData() {
     try {
         const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
-            fetch('json/users.json'),
-            fetch('json/books.json'),
-            fetch('json/categories.json'),
-            fetch('json/orders.json'),
-            fetch('json/order_details.json'),
-            fetch('json/addresses.json')
+            fetch('../json/users.json'),
+            fetch('../json/books.json'),
+            fetch('../json/categories.json'),
+            fetch('../json/orders.json'),
+            fetch('../json/order_details.json'),
+            fetch('../json/addresses.json')
         ]);
         
         users = await usersRes.json();
@@ -123,7 +124,7 @@ async function loadAllData() {
 // Tải dữ liệu nhập hàng
 async function loadImports() {
     try {
-        const response = await fetch('json/imports.json');
+        const response = await fetch('../json/imports.json');
         imports = await response.json();
     } catch (error) {
         imports = [];
@@ -134,7 +135,7 @@ async function loadImports() {
 // Tải dữ liệu tỷ lệ lợi nhuận
 async function loadProfitMargins() {
     try {
-        const response = await fetch('json/profit_margins.json');
+        const response = await fetch('../json/profit_margins.json');
         profitMargins = await response.json();
     } catch (error) {
         // Khởi tạo tỷ lệ mặc định cho mỗi loại sản phẩm
@@ -150,7 +151,7 @@ async function loadProfitMargins() {
 // Tải dữ liệu giao dịch tồn kho
 async function loadInventoryTransactions() {
     try {
-        const response = await fetch('json/inventory_transactions.json');
+        const response = await fetch('../json/inventory_transactions.json');
         inventoryTransactions = await response.json();
     } catch (error) {
         inventoryTransactions = [];

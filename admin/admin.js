@@ -1,5 +1,8 @@
-// Admin Panel JavaScript
-// Data stores
+// Mã JavaScript Quản trị viên
+// Hằng số - Ảnh mặc định cho sản phẩm
+const DEFAULT_PRODUCT_IMAGE = 'https://via.placeholder.com/200x300/e0e0e0/666666?text=Kh%C3%B4ng+c%C3%B3+%E1%BA%A3nh';
+
+// Lưu trữ dữ liệu
 let users = [];
 let books = [];
 let categories = [];
@@ -10,33 +13,33 @@ let imports = [];
 let profitMargins = [];
 let inventoryTransactions = [];
 
-// Current admin user
+// Người dùng quản trị hiện tại
 let currentAdmin = null;
 
-// Initialize
+// Khởi tạo
 document.addEventListener('DOMContentLoaded', async function() {
-    // Check authentication
+    // Kiểm tra xác thực
     const adminUser = localStorage.getItem('adminUser');
     if (adminUser) {
-        // Already logged in, show dashboard
+        // Đã đăng nhập, hiển thị dashboard
         currentAdmin = JSON.parse(adminUser);
         showDashboard();
     } else {
-        // Show login page
+        // Hiển thị trang đăng nhập
         showLogin();
     }
     
-    // Setup login form
+    // Thiết lập form đăng nhập
     document.getElementById('admin-login-form').addEventListener('submit', handleLogin);
 });
 
-// Show login page
+// Hiển thị trang đăng nhập
 function showLogin() {
     document.getElementById('loginPage').style.display = 'flex';
     document.getElementById('adminPage').style.display = 'none';
 }
 
-// Show dashboard
+// Hiển thị dashboard
 async function showDashboard() {
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('adminPage').style.display = 'block';
@@ -44,17 +47,17 @@ async function showDashboard() {
     document.getElementById('admin-name').textContent = currentAdmin.full_name;
     document.getElementById('welcome-text').textContent = `Xin chào, ${currentAdmin.full_name}`;
     
-    // Load all data
+    // Tải tất cả dữ liệu
     await loadAllData();
     
-    // Setup event listeners
+    // Thiết lập các lắng nghe sự kiện
     setupEventListeners();
     
-    // Load dashboard
+    // Tải dashboard
     loadDashboard();
 }
 
-// Handle login
+// Xử lý đăng nhập
 async function handleLogin(e) {
     e.preventDefault();
     
@@ -87,7 +90,7 @@ async function handleLogin(e) {
     }
 }
 
-// Load all data from JSON files
+// Tải tất cả dữ liệu từ các file JSON
 async function loadAllData() {
     try {
         const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
@@ -106,58 +109,58 @@ async function loadAllData() {
         orderDetails = await orderDetailsRes.json();
         addresses = await addressesRes.json();
         
-        // Load or initialize additional data
+        // Tải hoặc khởi tạo dữ liệu bổ sung
         await loadImports();
         await loadProfitMargins();
         await loadInventoryTransactions();
         
     } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Lỗi khi tải dữ liệu:', error);
         alert('Có lỗi khi tải dữ liệu!');
     }
 }
 
-// Load imports data
+// Tải dữ liệu nhập hàng
 async function loadImports() {
     try {
         const response = await fetch('json/imports.json');
         imports = await response.json();
     } catch (error) {
         imports = [];
-        console.log('No imports data found, initializing empty array');
+        console.log('Không tìm thấy dữ liệu nhập hàng, khởi tạo mảng rỗng');
     }
 }
 
-// Load profit margins data
+// Tải dữ liệu tỷ lệ lợi nhuận
 async function loadProfitMargins() {
     try {
         const response = await fetch('json/profit_margins.json');
         profitMargins = await response.json();
     } catch (error) {
-        // Initialize default margins for each category
+        // Khởi tạo tỷ lệ mặc định cho mỗi loại sản phẩm
         profitMargins = categories.map(cat => ({
             category_id: cat.id,
             default_margin: 20,
             product_margins: {}
         }));
-        console.log('No profit margins data found, initializing defaults');
+        console.log('Không tìm thấy dữ liệu tỷ lệ lợi nhuận, khởi tạo giá trị mặc định');
     }
 }
 
-// Load inventory transactions data
+// Tải dữ liệu giao dịch tồn kho
 async function loadInventoryTransactions() {
     try {
         const response = await fetch('json/inventory_transactions.json');
         inventoryTransactions = await response.json();
     } catch (error) {
         inventoryTransactions = [];
-        console.log('No inventory transactions data found, initializing empty array');
+        console.log('Không tìm thấy dữ liệu giao dịch tồn kho, khởi tạo mảng rỗng');
     }
 }
 
-// Setup event listeners
+// Thiết lập các lắng nghe sự kiện
 function setupEventListeners() {
-    // Menu navigation
+    // Điều hướng menu
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', function() {
             const section = this.dataset.section;
@@ -165,7 +168,7 @@ function setupEventListeners() {
         });
     });
     
-    // Search and filter listeners
+    // Lắng nghe sự kiện tìm kiếm và lọc
     document.getElementById('search-users')?.addEventListener('input', filterUsers);
     document.getElementById('filter-user-status')?.addEventListener('change', filterUsers);
     
@@ -179,27 +182,27 @@ function setupEventListeners() {
     document.getElementById('search-pricing')?.addEventListener('input', filterPricing);
     document.getElementById('filter-pricing-category')?.addEventListener('change', filterPricing);
     
-    // Form submissions
+    // Gửi form
     document.getElementById('categoryForm')?.addEventListener('submit', saveCategory);
     document.getElementById('productForm')?.addEventListener('submit', saveProduct);
     document.getElementById('importForm')?.addEventListener('submit', saveImport);
 }
 
-// Navigation
+// Điều hướng
 function navigateToSection(section) {
-    // Update menu
+    // Cập nhật menu
     document.querySelectorAll('.menu-item').forEach(item => {
         item.classList.remove('active');
     });
     document.querySelector(`[data-section="${section}"]`).classList.add('active');
     
-    // Update content
+    // Cập nhật nội dung
     document.querySelectorAll('.content-section').forEach(sec => {
         sec.classList.remove('active');
     });
     document.getElementById(section).classList.add('active');
     
-    // Update title
+    // Cập nhật tiêu đề
     const titles = {
         dashboard: 'Tổng quan',
         users: 'Quản lý người dùng',
@@ -212,7 +215,7 @@ function navigateToSection(section) {
     };
     document.getElementById('page-title').textContent = titles[section];
     
-    // Load section data
+    // Tải dữ liệu phần
     switch(section) {
         case 'dashboard':
             loadDashboard();
@@ -243,7 +246,7 @@ function navigateToSection(section) {
 
 // Dashboard
 function loadDashboard() {
-    // Stats
+    // Thống kê
     const activeUsers = users.filter(u => u.role === 'customer' && u.status).length;
     document.getElementById('total-users').textContent = activeUsers;
     
@@ -256,7 +259,7 @@ function loadDashboard() {
     const lowStockProducts = books.filter(b => b.stock < 10 && b.status).length;
     document.getElementById('low-stock').textContent = lowStockProducts;
     
-    // Recent orders
+    // Đơn hàng gần đây
     const recentOrders = [...orders].sort((a, b) => 
         new Date(b.created_at) - new Date(a.created_at)
     ).slice(0, 5);
@@ -275,7 +278,7 @@ function loadDashboard() {
         `;
     }).join('');
     
-    // Low stock alerts
+    // Cảnh báo sắp hết hàng
     const lowStockBooks = books.filter(b => b.stock < 10 && b.status);
     const alertsDiv = document.getElementById('low-stock-alerts');
     if (lowStockBooks.length === 0) {
@@ -289,7 +292,7 @@ function loadDashboard() {
     }
 }
 
-// Users Management
+// Quản lý Người dùng
 function loadUsers() {
     filterUsers();
 }
@@ -355,7 +358,7 @@ function toggleUserStatus(userId) {
     }
 }
 
-// Categories Management
+// Quản lý Loại sản phẩm
 function loadCategories() {
     const tbody = document.querySelector('#categories-table tbody');
     tbody.innerHTML = categories.filter(c => c.id !== 1).map(cat => `
@@ -411,13 +414,13 @@ function saveCategory(e) {
     };
     
     if (id) {
-        // Update
+        // Cập nhật
         const cat = categories.find(c => c.id === parseInt(id));
         if (cat) {
             Object.assign(cat, categoryData);
         }
     } else {
-        // Add new
+        // Thêm mới
         const newId = Math.max(...categories.map(c => c.id)) + 1;
         categories.push({
             id: newId,
@@ -440,9 +443,9 @@ function toggleCategoryStatus(catId) {
     }
 }
 
-// Products Management
+// Quản lý Sản phẩm
 function loadProducts() {
-    // Populate category filter
+    // Đổ dữ liệu cho bộ lọc loại sản phẩm
     const categorySelect = document.getElementById('filter-product-category');
     categorySelect.innerHTML = '<option value="">Tất cả loại</option>' + 
         categories.filter(c => c.id !== 1).map(cat => 
@@ -491,8 +494,8 @@ function filterProducts() {
                 <td>${book.id}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <img src="${book.image_url}" alt="${book.title}" 
-                             onerror="this.src='https://via.placeholder.com/50x70?text=No+Image'"
+                        <img src="${book.image_url || DEFAULT_PRODUCT_IMAGE}" alt="${book.title}" 
+                             onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'"
                              style="width: 50px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <span style="font-weight: 500;">${book.title}</span>
                     </div>
@@ -519,10 +522,10 @@ function showAddProductModal() {
     document.getElementById('product-id').value = '';
     document.getElementById('product-status').checked = true;
     
-    // Reset preview
-    document.getElementById('product-image-preview').innerHTML = '<span style="color: #999; font-size: 12px; text-align: center; padding: 10px;">Preview</span>';
+    // Reset xem trước ảnh
+    document.getElementById('product-image-preview').innerHTML = `<img src="${DEFAULT_PRODUCT_IMAGE}" style="width: 100%; height: 100%; object-fit: cover;">`;
     
-    // Populate categories
+    // Đổ dữ liệu cho loại sản phẩm
     const catSelect = document.getElementById('product-categories');
     catSelect.innerHTML = categories.filter(c => c.id !== 1).map(cat => 
         `<option value="${cat.id}">${cat.display_name}</option>`
@@ -547,13 +550,12 @@ function editProduct(bookId) {
         document.getElementById('product-description').value = book.description || '';
         document.getElementById('product-status').checked = book.status;
         
-        // Show image preview
-        if (book.image_url) {
-            document.getElementById('product-image-preview').innerHTML = 
-                `<img src="${book.image_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
-        }
+        // Hiển thị xem trước ảnh
+        const imageUrl = book.image_url || DEFAULT_PRODUCT_IMAGE;
+        document.getElementById('product-image-preview').innerHTML = 
+            `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'" style="width: 100%; height: 100%; object-fit: cover;">`;
         
-        // Populate and select categories
+        // Đổ dữ liệu và chọn loại sản phẩm
         const catSelect = document.getElementById('product-categories');
         catSelect.innerHTML = categories.filter(c => c.id !== 1).map(cat => 
             `<option value="${cat.id}" ${book.category_ids?.includes(cat.id) ? 'selected' : ''}>${cat.display_name}</option>`
@@ -563,35 +565,35 @@ function editProduct(bookId) {
     }
 }
 
-// Preview image from URL
+// Xem trước ảnh từ URL
 function previewProductImage() {
     const imageUrl = document.getElementById('product-image').value;
     const preview = document.getElementById('product-image-preview');
     
     if (imageUrl) {
-        preview.innerHTML = `<img src="${imageUrl}" onerror="this.parentElement.innerHTML='<span style=color:#e74c3c;font-size:12px;text-align:center;padding:10px;>URL không hợp lệ</span>'" style="width: 100%; height: 100%; object-fit: cover;">`;
+        preview.innerHTML = `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'; this.parentElement.style.border='2px solid #e74c3c';" style="width: 100%; height: 100%; object-fit: cover;">`;
     } else {
-        preview.innerHTML = '<span style="color: #999; font-size: 12px; text-align: center; padding: 10px;">Preview</span>';
+        preview.innerHTML = `<img src="${DEFAULT_PRODUCT_IMAGE}" style="width: 100%; height: 100%; object-fit: cover;">`;
     }
 }
 
-// Handle image file upload
+// Xử lý tải lên file ảnh
 function handleProductImageUpload(event) {
     const file = event.target.files[0];
     if (file) {
-        // Validate file type
+        // Kiểm tra loại file
         if (!file.type.startsWith('image/')) {
             alert('Vui lòng chọn file hình ảnh!');
             return;
         }
         
-        // Validate file size (max 5MB)
+        // Kiểm tra kích thước file (tối đa 5MB)
         if (file.size > 5 * 1024 * 1024) {
             alert('Kích thước file không được vượt quá 5MB!');
             return;
         }
         
-        // Read and convert to base64
+        // Đọc và chuyển đổi sang base64
         const reader = new FileReader();
         reader.onload = function(e) {
             const base64Image = e.target.result;
@@ -619,20 +621,20 @@ function saveProduct(e) {
         pages: parseInt(document.getElementById('product-pages').value) || null,
         authors: authors,
         category_ids: selectedCategories,
-        image_url: document.getElementById('product-image').value || 'https://picsum.photos/200/300?random=' + Date.now(),
+        image_url: document.getElementById('product-image').value || DEFAULT_PRODUCT_IMAGE,
         description: document.getElementById('product-description').value,
         status: document.getElementById('product-status').checked,
         updated_at: new Date().toISOString()
     };
     
     if (id) {
-        // Update
+        // Cập nhật
         const book = books.find(b => b.id === parseInt(id));
         if (book) {
             Object.assign(book, productData);
         }
     } else {
-        // Add new
+        // Thêm mới
         const newId = Math.max(...books.map(b => b.id)) + 1;
         books.push({
             id: newId,
@@ -657,7 +659,7 @@ function toggleProductStatus(bookId) {
     }
 }
 
-// Imports Management
+// Quản lý Nhập hàng
 function loadImportsTable() {
     filterImports();
 }
@@ -816,13 +818,13 @@ function saveImport(e) {
     };
     
     if (id) {
-        // Update
+        // Cập nhật
         const importRecord = imports.find(i => i.id === parseInt(id));
         if (importRecord) {
             Object.assign(importRecord, importData);
         }
     } else {
-        // Add new
+        // Thêm mới
         const newId = imports.length > 0 ? Math.max(...imports.map(i => i.id)) + 1 : 1;
         imports.push({
             id: newId,
@@ -840,20 +842,20 @@ function completeImport() {
     const id = document.getElementById('import-id').value;
     
     if (!id) {
-        // Save first
+        // Lưu trước
         saveImport(event);
         return;
     }
     
     const importRecord = imports.find(i => i.id === parseInt(id));
     if (importRecord && importRecord.status === 'draft') {
-        // Update stock
+        // Cập nhật tồn kho
         importRecord.items.forEach(item => {
             const book = books.find(b => b.id === item.product_id);
             if (book) {
                 book.stock += item.quantity;
                 
-                // Record transaction
+                // Ghi lại giao dịch
                 inventoryTransactions.push({
                     id: inventoryTransactions.length + 1,
                     product_id: item.product_id,
@@ -883,13 +885,13 @@ function completeImportById(importId) {
     if (confirm('Bạn có chắc muốn hoàn thành phiếu nhập này?')) {
         const importRecord = imports.find(i => i.id === importId);
         if (importRecord && importRecord.status === 'draft') {
-            // Update stock
+            // Cập nhật tồn kho
             importRecord.items.forEach(item => {
                 const book = books.find(b => b.id === item.product_id);
                 if (book) {
                     book.stock += item.quantity;
                     
-                    // Record transaction
+                    // Ghi lại giao dịch
                     inventoryTransactions.push({
                         id: inventoryTransactions.length + 1,
                         product_id: item.product_id,
@@ -915,9 +917,9 @@ function completeImportById(importId) {
     }
 }
 
-// Pricing Management
+// Quản lý Giá bán
 function loadPricing() {
-    // Load category margins
+    // Tải tỷ lệ lợi nhuận theo loại
     const tbody = document.querySelector('#category-margins-table tbody');
     tbody.innerHTML = categories.filter(c => c.id !== 1).map(cat => {
         const margin = profitMargins.find(m => m.category_id === cat.id);
@@ -937,7 +939,7 @@ function loadPricing() {
         `;
     }).join('');
     
-    // Populate category filter for pricing
+    // Đổ dữ liệu cho bộ lọc loại giá
     const categorySelect = document.getElementById('filter-pricing-category');
     categorySelect.innerHTML = '<option value="">Tất cả loại</option>' + 
         categories.filter(c => c.id !== 1).map(cat => 
@@ -985,7 +987,7 @@ function filterPricing() {
     
     const tbody = document.querySelector('#pricing-table tbody');
     tbody.innerHTML = filteredBooks.map(book => {
-        // Get cost from latest import
+        // Lấy giá nhập từ phiếu nhập mới nhất
         const bookImports = imports.filter(imp => 
             imp.status === 'completed' && 
             imp.items.some(item => item.product_id === book.id)
@@ -1000,7 +1002,7 @@ function filterPricing() {
             costPrice = importItem?.import_price || 0;
         }
         
-        // Get margin
+        // Lấy tỷ lệ lợi nhuận
         const categoryId = book.category_ids?.[0];
         const margin = profitMargins.find(m => m.category_id === categoryId);
         let marginPercent = margin?.product_margins?.[book.id] || margin?.default_margin || 20;
@@ -1051,7 +1053,7 @@ function applyCalculatedPrice(productId, calculatedPrice) {
     if (confirm('Áp dụng giá tính toán vào giá bán?')) {
         const book = books.find(b => b.id === productId);
         if (book) {
-            book.price = Math.round(calculatedPrice / 1000) * 1000; // Round to nearest 1000
+            book.price = Math.round(calculatedPrice / 1000) * 1000; // Làm tròn đến 1000 gần nhất
             book.updated_at = new Date().toISOString();
             saveData('books', books);
             alert('Đã cập nhật giá bán!');
@@ -1060,7 +1062,7 @@ function applyCalculatedPrice(productId, calculatedPrice) {
     }
 }
 
-// Orders Management
+// Quản lý Đơn hàng
 function loadOrders() {
     filterOrders();
 }
@@ -1184,7 +1186,7 @@ function updateOrderStatus(orderId) {
         const oldStatus = order.status;
         order.status = newStatus;
         
-        // If status changes from pending/processing to delivered, record inventory transaction
+        // Nếu trạng thái thay đổi từ pending/processing sang delivered, ghi lại giao dịch tồn kho
         if ((oldStatus === 'pending' || oldStatus === 'processing') && newStatus === 'delivered') {
             const details = orderDetails.filter(d => d.order_id === orderId);
             details.forEach(detail => {
@@ -1208,16 +1210,16 @@ function updateOrderStatus(orderId) {
     }
 }
 
-// Inventory Management
+// Quản lý Tồn kho
 function loadInventory() {
-    // Populate category filter
+    // Đổ dữ liệu cho bộ lọc loại sản phẩm
     const categorySelect = document.getElementById('filter-inventory-category');
     categorySelect.innerHTML = '<option value="">Tất cả loại</option>' + 
         categories.filter(c => c.id !== 1).map(cat => 
             `<option value="${cat.id}">${cat.display_name}</option>`
         ).join('');
     
-    // Populate product select for report
+    // Đổ dữ liệu cho chọn sản phẩm để báo cáo
     const productSelect = document.getElementById('inventory-report-product');
     productSelect.innerHTML = '<option value="">Tất cả sản phẩm</option>' + 
         books.map(b => `<option value="${b.id}">${b.title}</option>`).join('');
@@ -1247,7 +1249,7 @@ function loadInventory() {
             return cat?.display_name || '';
         }).filter(n => n).join(', ');
         
-        // Calculate imports and sales
+        // Tính nhập và bán
         const bookTransactions = inventoryTransactions.filter(t => t.product_id === book.id);
         const totalImport = bookTransactions.filter(t => t.type === 'import').reduce((sum, t) => sum + t.quantity, 0);
         const totalSale = bookTransactions.filter(t => t.type === 'sale').reduce((sum, t) => sum + t.quantity, 0);
@@ -1343,7 +1345,7 @@ function generateInventoryReport() {
     document.getElementById('inventory-report-result').innerHTML = reportHTML;
 }
 
-// Utility Functions
+// Hàm tiện ích
 function formatCurrency(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
@@ -1372,7 +1374,7 @@ function getPaymentMethodText(method) {
     return methods[method] || method;
 }
 
-// Modal Functions
+// Hàm Modal
 function openModal(modalId) {
     document.getElementById(modalId).classList.add('active');
 }
@@ -1381,7 +1383,7 @@ function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
 }
 
-// Logout
+// Đăng xuất
 function logout() {
     if (confirm('Bạn có chắc muốn đăng xuất?')) {
         localStorage.removeItem('adminUser');
@@ -1393,12 +1395,12 @@ function logout() {
     }
 }
 
-// Save data (simulated - in real app, would use API)
+// Lưu dữ liệu (mô phỏng - trong ứng dụng thực sẽ sử dụng API)
 function saveData(type, data) {
-    // In a real application, this would make an API call to save data
-    // For now, we'll just log it
-    console.log(`Saving ${type}:`, data);
+    // Trong ứng dụng thực, sẽ gọi API để lưu dữ liệu
+    // Hiện tại chỉ log nó ra
+    console.log(`Đang lưu ${type}:`, data);
     
-    // You could use localStorage for persistence in this demo:
+    // Có thể sử dụng localStorage để lưu trữ trong demo này:
     localStorage.setItem(`admin_${type}`, JSON.stringify(data));
 }

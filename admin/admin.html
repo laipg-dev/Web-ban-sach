@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản trị hệ thống - Nhà sách</title>
     <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <!-- Login Page -->
     <div id="loginPage" class="login-page">
         <div class="admin-login-container">
             <div class="admin-login-header">
-                <div class="admin-icon"><i class="fas fa-shield-halved"></i></div>
+                <div class="admin-icon">🔐</div>
                 <h1>Quản trị viên</h1>
                 <p>Đăng nhập vào hệ thống quản lý</p>
             </div>
@@ -34,7 +33,7 @@
             </form>
 
             <div class="back-to-home">
-                <a href="../index.html">← Quay lại trang chủ</a>
+                <a href="index.html">← Quay lại trang chủ</a>
             </div>
         </div>
     </div>
@@ -45,40 +44,40 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-store"></i> Quản trị</h2>
+                <h2>🏪 Quản trị</h2>
                 <p id="admin-name">Admin</p>
             </div>
             <div class="sidebar-menu">
                 <div class="menu-item active" data-section="dashboard">
-                    <span class="menu-item-icon"><i class="fas fa-chart-line"></i></span>
+                    <span class="menu-item-icon">📊</span>
                     <span>Tổng quan</span>
                 </div>
                 <div class="menu-item" data-section="users">
-                    <span class="menu-item-icon"><i class="fas fa-users"></i></span>
+                    <span class="menu-item-icon">👥</span>
                     <span>Quản lý người dùng</span>
                 </div>
                 <div class="menu-item" data-section="categories">
-                    <span class="menu-item-icon"><i class="fas fa-layer-group"></i></span>
+                    <span class="menu-item-icon">📂</span>
                     <span>Quản lý loại sản phẩm</span>
                 </div>
                 <div class="menu-item" data-section="products">
-                    <span class="menu-item-icon"><i class="fas fa-book"></i></span>
+                    <span class="menu-item-icon">📚</span>
                     <span>Quản lý sản phẩm</span>
                 </div>
                 <div class="menu-item" data-section="imports">
-                    <span class="menu-item-icon"><i class="fas fa-truck-ramp-box"></i></span>
+                    <span class="menu-item-icon">📥</span>
                     <span>Quản lý nhập hàng</span>
                 </div>
                 <div class="menu-item" data-section="pricing">
-                    <span class="menu-item-icon"><i class="fas fa-tags"></i></span>
+                    <span class="menu-item-icon">💰</span>
                     <span>Quản lý giá bán</span>
                 </div>
                 <div class="menu-item" data-section="orders">
-                    <span class="menu-item-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <span class="menu-item-icon">🛒</span>
                     <span>Quản lý đơn hàng</span>
                 </div>
                 <div class="menu-item" data-section="inventory">
-                    <span class="menu-item-icon"><i class="fas fa-boxes-stacked"></i></span>
+                    <span class="menu-item-icon">📦</span>
                     <span>Quản lý tồn kho</span>
                 </div>
             </div>
@@ -478,31 +477,24 @@
                 </div>
                 <div class="form-group">
                     <label>Loại sản phẩm *</label>
-                    <div id="product-categories" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; max-height: 150px; overflow-y: auto; background: #f9f9f9;">
-                        <!-- Categories will be populated by JavaScript -->
-                    </div>
+                    <select id="product-categories" multiple style="height: 100px;">
+                    </select>
+                    <small>Giữ Ctrl để chọn nhiều loại</small>
                 </div>
                 <div class="form-group">
                     <label>Tác giả (ngăn cách bởi dấu phẩy)</label>
                     <input type="text" id="product-authors" placeholder="Tác giả 1, Tác giả 2">
                 </div>
                 <div class="form-group">
-                    <label>Hình ảnh sách</label>
+                    <label>Hình ảnh sách *</label>
                     <div style="display: flex; gap: 10px; align-items: start;">
                         <div style="flex: 1;">
-                            <input type="text" id="product-image" placeholder="Nhập URL hình ảnh hoặc upload file (để trống sẽ dùng ảnh mặc định)" onchange="previewProductImage()">
-                            <div style="display: flex; gap: 10px; margin-top: 5px; align-items: center;">
-                                <div style="flex: 1;">
-                                    <small>Hoặc upload file:</small>
-                                    <input type="file" id="product-image-file" accept="image/*" onchange="handleProductImageUpload(event)" style="margin-top: 5px;">
-                                </div>
-                                <button type="button" class="btn btn-sm btn-info" onclick="useDefaultImage()" style="white-space: nowrap;">
-                                    <i class="fas fa-image"></i> Dùng ảnh mặc định
-                                </button>
-                            </div>
+                            <input type="text" id="product-image" placeholder="Nhập URL hình ảnh hoặc upload file" required onchange="previewProductImage()">
+                            <small>Hoặc upload file:</small>
+                            <input type="file" id="product-image-file" accept="image/*" onchange="handleProductImageUpload(event)" style="margin-top: 5px;">
                         </div>
                         <div id="product-image-preview" style="width: 120px; height: 160px; border: 2px dashed #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f8f9fa;">
-                            <img src="https://via.placeholder.com/200x300/e0e0e0/666666?text=Kh%C3%B4ng+c%C3%B3+%E1%BA%A3nh" style="width: 100%; height: 100%; object-fit: cover;">
+                            <span style="color: #999; font-size: 12px; text-align: center; padding: 10px;">Preview</span>
                         </div>
                     </div>
                 </div>

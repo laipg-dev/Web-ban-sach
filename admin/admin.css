@@ -87,16 +87,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 45px;
     color: white;
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     animation: iconPulse 2s ease-in-out infinite;
-}
-
-.admin-icon i {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 @keyframes iconPulse {
@@ -162,21 +156,6 @@ body {
     font-size: 22px;
     margin-bottom: 8px;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.sidebar-header h2 i {
-    font-size: 24px;
-    animation: storeRotate 3s ease-in-out infinite;
-}
-
-@keyframes storeRotate {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-5deg); }
-    75% { transform: rotate(5deg); }
 }
 
 .sidebar-header p {
@@ -233,25 +212,8 @@ body {
 }
 
 .menu-item-icon {
-    font-size: 20px;
-    width: 30px;
-    text-align: center;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.menu-item-icon i {
-    transition: all 0.3s ease;
-}
-
-.menu-item:hover .menu-item-icon i {
-    transform: scale(1.2);
-}
-
-.menu-item.active .menu-item-icon {
-    color: #3498db;
+    font-size: 18px;
+    width: 25px;
 }
 
 /* Main Content */

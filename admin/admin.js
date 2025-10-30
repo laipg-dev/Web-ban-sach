@@ -1,4 +1,5 @@
-
+// Mã JavaScript Quản trị viên
+// Hằng số - Ảnh mặc định cho sản phẩm
 const DEFAULT_PRODUCT_IMAGE = 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop';
 
 // Lưu trữ dữ liệu
@@ -93,7 +94,7 @@ async function handleLogin(e) {
 // Tải tất cả dữ liệu từ các file JSON
 async function loadAllData() {
     try {
-        // Kiểm tra localStorage trước, nếu có thì dùng localStorage
+        // Kiểm tra localStorage trước, nếu có thì ưu tiên dùng localStorage
         const localBooks = localStorage.getItem('admin_books');
         const localCategories = localStorage.getItem('admin_categories');
         const localUsers = localStorage.getItem('admin_users');
@@ -109,7 +110,7 @@ async function loadAllData() {
             orders = localOrders ? JSON.parse(localOrders) : [];
             orderDetails = localOrderDetails ? JSON.parse(localOrderDetails) : [];
             addresses = localAddresses ? JSON.parse(localAddresses) : [];
-            console.log('Đã tải dữ liệu từ localStorage');
+            console.log('✅ Đã tải dữ liệu từ localStorage');
         } else {
             // Nếu chưa có, load từ JSON file và lưu vào localStorage
             const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
@@ -135,7 +136,7 @@ async function loadAllData() {
             saveData('orders', orders);
             saveData('order_details', orderDetails);
             saveData('addresses', addresses);
-            console.log('Đã tải dữ liệu từ JSON files và lưu vào localStorage');
+            console.log('✅ Đã tải từ JSON files và lưu vào localStorage');
         }
         
         // Tải hoặc khởi tạo dữ liệu bổ sung
@@ -534,10 +535,15 @@ function filterProducts() {
                 <td><span class="badge ${book.stock < 10 ? 'badge-warning' : 'badge-info'}">${book.stock}</span></td>
                 <td>${book.status ? '<span class="badge badge-success">Đang bán</span>' : '<span class="badge badge-danger">Đã ẩn</span>'}</td>
                 <td>
-                    <button class="btn btn-sm btn-primary" onclick="editProduct(${book.id})">Sửa</button>
+                    <button class="btn btn-sm btn-primary" onclick="editProduct(${book.id})">
+                        <i class="fas fa-edit"></i> Sửa
+                    </button>
                     <button class="btn btn-sm ${book.status ? 'btn-danger' : 'btn-success'}" 
                         onclick="toggleProductStatus(${book.id})">
-                        ${book.status ? 'Ẩn' : 'Hiện'}
+                        <i class="fas fa-eye${book.status ? '-slash' : ''}"></i> ${book.status ? 'Ẩn' : 'Hiện'}
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteProduct(${book.id})" style="background: #dc3545;">
+                        <i class="fas fa-trash"></i> Xóa
                     </button>
                 </td>
             </tr>
@@ -728,6 +734,18 @@ function toggleProductStatus(bookId) {
         book.updated_at = new Date().toISOString();
         saveData('books', books);
         loadProducts();
+    }
+}
+
+// Xóa sản phẩm
+function deleteProduct(bookId) {
+    const book = books.find(b => b.id === bookId);
+    if (book && confirm(`Bạn có chắc muốn xóa sản phẩm "${book.title}"?\n\nLưu ý: Hành động này không thể hoàn tác!`)) {
+        // Xóa sản phẩm khỏi mảng
+        books = books.filter(b => b.id !== bookId);
+        saveData('books', books);
+        loadProducts();
+        alert('✅ Đã xóa sản phẩm thành công!');
     }
 }
 

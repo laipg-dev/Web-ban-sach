@@ -1,4 +1,4 @@
-// ===== Helpers & keys =====
+// ===== Hàm trợ giúp & khóa =====
 const $ = (s, r = document) => r.querySelector(s);
 const fmt = (n) => (n || 0).toLocaleString("vi-VN") + " đ";
 const K = {

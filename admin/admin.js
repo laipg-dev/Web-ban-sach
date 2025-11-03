@@ -536,14 +536,14 @@ function filterProducts() {
                 <td>${book.status ? '<span class="badge badge-success">Đang bán</span>' : '<span class="badge badge-danger">Đã ẩn</span>'}</td>
                 <td>
                     <button class="btn btn-sm btn-primary" onclick="editProduct(${book.id})">
-                        <i class="fas fa-edit"></i> Sửa
+                        Sửa
                     </button>
                     <button class="btn btn-sm ${book.status ? 'btn-danger' : 'btn-success'}" 
                         onclick="toggleProductStatus(${book.id})">
-                        <i class="fas fa-eye${book.status ? '-slash' : ''}"></i> ${book.status ? 'Ẩn' : 'Hiện'}
+                        ${book.status ? 'Ẩn' : 'Hiện'}
                     </button>
                     <button class="btn btn-sm btn-danger" onclick="deleteProduct(${book.id})" style="background: #dc3545;">
-                        <i class="fas fa-trash"></i> Xóa
+                        Xóa
                     </button>
                 </td>
             </tr>

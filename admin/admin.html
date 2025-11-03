@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản trị hệ thống - Nhà sách</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -11,7 +12,7 @@
     <div id="loginPage" class="login-page">
         <div class="admin-login-container">
             <div class="admin-login-header">
-                <div class="admin-icon">🔐</div>
+                <div class="admin-icon"><i class="fa-solid fa-lock"></i></div>
                 <h1>Quản trị viên</h1>
                 <p>Đăng nhập vào hệ thống quản lý</p>
             </div>
@@ -33,7 +34,7 @@
             </form>
 
             <div class="back-to-home">
-                <a href="index.html">← Quay lại trang chủ</a>
+                <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
             </div>
         </div>
     </div>
@@ -44,40 +45,40 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>🏪 Quản trị</h2>
+                <h2><i class="fa-solid fa-user-shield"></i> Quản trị viên</h2>
                 <p id="admin-name">Admin</p>
             </div>
             <div class="sidebar-menu">
                 <div class="menu-item active" data-section="dashboard">
-                    <span class="menu-item-icon">📊</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-chart-line"></i></span>
                     <span>Tổng quan</span>
                 </div>
                 <div class="menu-item" data-section="users">
-                    <span class="menu-item-icon">👥</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-users"></i></span>
                     <span>Quản lý người dùng</span>
                 </div>
                 <div class="menu-item" data-section="categories">
-                    <span class="menu-item-icon">📂</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-folder"></i></span>
                     <span>Quản lý loại sản phẩm</span>
                 </div>
                 <div class="menu-item" data-section="products">
-                    <span class="menu-item-icon">📚</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-book"></i></span>
                     <span>Quản lý sản phẩm</span>
                 </div>
                 <div class="menu-item" data-section="imports">
-                    <span class="menu-item-icon">📥</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-download"></i></span>
                     <span>Quản lý nhập hàng</span>
                 </div>
                 <div class="menu-item" data-section="pricing">
-                    <span class="menu-item-icon">💰</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-dollar-sign"></i></span>
                     <span>Quản lý giá bán</span>
                 </div>
                 <div class="menu-item" data-section="orders">
-                    <span class="menu-item-icon">🛒</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-shopping-cart"></i></span>
                     <span>Quản lý đơn hàng</span>
                 </div>
                 <div class="menu-item" data-section="inventory">
-                    <span class="menu-item-icon">📦</span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-box"></i></span>
                     <span>Quản lý tồn kho</span>
                 </div>
             </div>
@@ -136,7 +137,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h2>⚠️ Cảnh báo sản phẩm sắp hết hàng</h2>
+                        <h2><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo sản phẩm sắp hết hàng</h2>
                     </div>
                     <div id="low-stock-alerts"></div>
                 </div>

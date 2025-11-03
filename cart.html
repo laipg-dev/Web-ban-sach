@@ -27,7 +27,7 @@
       </h2>
 
       <!-- Body -->
-      <main class="page grid">
+      <main class="page flex">
         <!-- Left -->
 
         <div>
@@ -87,6 +87,367 @@
         </div>
       </div>
     </footer>
+    <!-- Modal Panel -->
+    <div id="panel-overlay" class="overlay">
+      <div class="panel-wrapper">
+        <div class="panel-scroll">
+          <div id="checkout-panel" class="panel">
+            <button class="close" id="close-panel">×</button>
+            <div class="checkout-container">
+              <!-- Left Column -->
+              <div class="checkout-left">
+                <!-- Order Items -->
+                <div class="checkout-section">
+                  <h2 class="section-title">📦 Sản phẩm đã chọn</h2>
+                  <div id="order-items"></div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="checkout-section">
+                  <h2 class="section-title">📍 Địa chỉ giao hàng</h2>
+                  <div id="address-list"></div>
+                  <button class="add-address-btn" id="add-address-btn">
+                    ➕ Thêm địa chỉ mới
+                  </button>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="checkout-section">
+                  <h2 class="section-title">💳 Phương thức thanh toán</h2>
+
+                  <div class="payment-method" data-method="cod">
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="cod"
+                      id="payment-cod"
+                    />
+                    <div class="payment-icon cod-icon">🚚</div>
+                    <div class="payment-info">
+                      <h4>Thanh toán khi nhận hàng (COD)</h4>
+                      <p>Thanh toán bằng tiền mặt khi nhận được hàng</p>
+                    </div>
+                  </div>
+
+                  <div class="payment-method" data-method="qr">
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="qr"
+                      id="payment-qr"
+                    />
+                    <div class="payment-icon qr-icon">📱</div>
+                    <div class="payment-info">
+                      <h4>Chuyển khoản qua QR Code</h4>
+                      <p>Quét mã QR để chuyển khoản ngân hàng</p>
+                    </div>
+                  </div>
+
+                  <!-- QR Code Section -->
+                  <div id="qr-section" class="qr-section">
+                    <div class="qr-code">
+                      <img
+                        src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNNDAgNDBINjBWNjBINDBWNDBaTTQwIDgwSDYwVjEwMEg0MFY4MFpNNDAgMTIwSDYwVjE0MEg0MFYxMjBaTTQwIDE2MEg2MFYxODBINDBWMTYwWk04MCA0MEgxMDBWNjBIODBWNDBaTTgwIDgwSDEwMFYxMDBIODBWODBaTTgwIDEyMEgxMDBWMTQwSDgwVjEyMFpNODAgMTYwSDEwMFYxODBIODBWMTYwWk0xMjAgNDBIMTQwVjYwSDEyMFY0MFpNMTIwIDgwSDE0MFYxMDBIMTIwVjgwWk0xMjAgMTIwSDE0MFYxNDBIMTIwVjEyMFpNMTIwIDE2MEgxNDBWMTgwSDEyMFYxNjBaTTE2MCA0MEgxODBWNjBIMTYwVjQwWk0xNjAgODBIMTgwVjEwMEgxNjBWODBaTTE2MCAxMjBIMTgwVjE0MEgxNjBWMTIwWk0xNjAgMTYwSDE4MFYxODBIMTYwVjE2MFoiIGZpbGw9ImJsYWNrIi8+PHRleHQgeD0iMTAwIiB5PSIxMTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtc2l6ZT0iMTIiPkJhbmsgUVI8L3RleHQ+PC9zdmc+"
+                        alt="QR Code"
+                      />
+                    </div>
+                    <div class="bank-info">
+                      <h4>Thông tin chuyển khoản</h4>
+                      <div class="bank-detail">
+                        <span>Ngân hàng:</span>
+                        <strong>Vietcombank</strong>
+                      </div>
+                      <div class="bank-detail">
+                        <span>Số tài khoản:</span>
+                        <strong>0123456789</strong>
+                      </div>
+                      <div class="bank-detail">
+                        <span>Tên tài khoản:</span>
+                        <strong>BOOKSHOP STORE</strong>
+                      </div>
+                      <div class="bank-detail">
+                        <span>Số tiền:</span>
+                        <strong id="transfer-amount">0đ</strong>
+                      </div>
+                      <div class="bank-detail">
+                        <span>Nội dung:</span>
+                        <strong id="transfer-content"
+                          >THANHTOAN [MÃ ĐƠN]</strong
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column - Order Summary -->
+              <div class="checkout-right">
+                <div class="checkout-section checkout-summary">
+                  <h2 class="section-title">📋 Tóm tắt đơn hàng</h2>
+
+                  <div class="summary-row">
+                    <span>Tạm tính:</span>
+                    <span id="subtotal">0đ</span>
+                  </div>
+
+                  <div class="summary-row">
+                    <span>Tổng cộng:</span>
+                    <span id="total-amount">0đ</span>
+                  </div>
+
+                  <button class="checkout-btn" id="place-order-btn" disabled>
+                    Đặt hàng
+                  </button>
+
+                  <div
+                    style="
+                      text-align: center;
+                      margin-top: 15px;
+                      color: #666;
+                      font-size: 14px;
+                    "
+                  >
+                    <p>🔒 Thông tin của bạn được bảo mật</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Address Modal -->
+            <div id="address-modal" class="checkout-modal-overlay">
+              <div class="checkout-modal-content">
+                <div class="checkout-modal-header">
+                  <h3>Thêm địa chỉ mới</h3>
+                  <button class="checkout-modal-close modal-close">
+                    &times;
+                  </button>
+                </div>
+                <form id="address-form">
+                  <div class="checkout-form-group">
+                    <label for="receiver-name">Họ và tên người nhận</label>
+                    <input
+                      type="text"
+                      id="receiver-name"
+                      name="receiver-name"
+                      required
+                    />
+                    <div class="checkout-error-message error-message">
+                      Vui lòng nhập tên người nhận
+                    </div>
+                  </div>
+
+                  <div class="checkout-form-group">
+                    <label for="receiver-phone">Số điện thoại</label>
+                    <input
+                      type="tel"
+                      id="receiver-phone"
+                      name="receiver-phone"
+                      required
+                    />
+                    <div class="checkout-error-message error-message">
+                      Vui lòng nhập số điện thoại hợp lệ
+                    </div>
+                  </div>
+
+                  <div class="checkout-form-group">
+                    <label for="province">Tỉnh/Thành phố</label>
+                    <input type="text" id="province" name="province" required />
+                    <div class="checkout-error-message error-message">
+                      Vui lòng nhập tỉnh/thành phố
+                    </div>
+                  </div>
+
+                  <div class="checkout-form-group">
+                    <label for="district">Quận/Huyện</label>
+                    <input type="text" id="district" name="district" required />
+                    <div class="checkout-error-message error-message">
+                      Vui lòng nhập quận/huyện
+                    </div>
+                  </div>
+
+                  <div class="checkout-form-group">
+                    <label for="ward">Phường/Xã</label>
+                    <input type="text" id="ward" name="ward" required />
+                    <div class="checkout-error-message error-message">
+                      Vui lòng nhập phường/xã
+                    </div>
+                  </div>
+
+                  <div class="checkout-form-group">
+                    <label for="address-detail">Địa chỉ cụ thể</label>
+                    <input
+                      type="text"
+                      id="address-detail"
+                      name="address-detail"
+                      required
+                      placeholder="Số nhà, tên đường..."
+                    />
+                    <div class="checkout-error-message error-message">
+                      Vui lòng nhập địa chỉ cụ thể
+                    </div>
+                  </div>
+
+                  <div class="checkout-form-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        id="set-default"
+                        name="set-default"
+                      />
+                      Đặt làm địa chỉ mặc định
+                    </label>
+                  </div>
+
+                  <div class="checkout-btn-group">
+                    <button
+                      type="submit"
+                      class="checkout-btn checkout-btn-primary"
+                    >
+                      Lưu địa chỉ
+                    </button>
+                    <button
+                      type="button"
+                      class="checkout-btn checkout-btn-secondary modal-close"
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="order-success-panel"
+        class="panel success-panel"
+        style="display: none"
+      >
+        <div class="panel-header">
+          <div class="title">Đặt hàng thành công!</div>
+          <button class="close" id="close-success-panel" aria-label="Đóng">
+            ✕
+          </button>
+        </div>
+        <div class="panel-body">
+          <div class="success-container">
+            <div class="success-card" style="box-shadow: none; padding: 0">
+              <div
+                class="success-icon"
+                style="font-size: 48px; margin-bottom: 8px"
+              >
+                ✅
+              </div>
+              <h2 class="success-title" style="margin: 0 0 8px">
+                Đặt hàng thành công!
+              </h2>
+              <p class="success-message" style="margin: 0 0 16px; color: #555">
+                Cảm ơn bạn đã mua sắm tại Bookshop. Đơn hàng của bạn đã được
+                tiếp nhận và đang được xử lý.
+              </p>
+              <div
+                class="order-info"
+                style="
+                  border: 1px solid #eee;
+                  border-radius: 12px;
+                  padding: 12px;
+                  margin-bottom: 16px;
+                "
+              >
+                <div
+                  class="order-row"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 6px 0;
+                  "
+                >
+                  <span>Mã đơn hàng:</span><span id="os-order-id">--</span>
+                </div>
+                <div
+                  class="order-row"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 6px 0;
+                  "
+                >
+                  <span>Thời gian đặt:</span><span id="os-order-time">--</span>
+                </div>
+                <div
+                  class="order-row"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 6px 0;
+                  "
+                >
+                  <span>Phương thức thanh toán:</span
+                  ><span id="os-payment-method">--</span>
+                </div>
+                <div
+                  class="order-row"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin: 6px 0;
+                  "
+                >
+                  <span>Tổng tiền:</span><span id="os-total-amount">--</span>
+                </div>
+              </div>
+
+              <div
+                id="os-qr-payment-section"
+                class="note"
+                style="display: none; margin-bottom: 12px"
+              >
+                <h4 style="margin: 6px 0">💳 Thông tin chuyển khoản</h4>
+                <div
+                  class="payment-row"
+                  style="display: flex; justify-content: space-between"
+                >
+                  <span>Số tiền cần chuyển:</span
+                  ><span id="os-transfer-amount">--</span>
+                </div>
+                <div
+                  class="payment-row"
+                  style="display: flex; justify-content: space-between"
+                >
+                  <span>Nội dung:</span
+                  ><strong id="os-transfer-content">--</strong>
+                </div>
+              </div>
+
+              <div
+                id="os-cod-payment-section"
+                class="note"
+                style="display: none; margin-bottom: 12px"
+              >
+                <strong>📦 COD</strong> — Bạn sẽ thanh toán bằng tiền mặt khi
+                nhận hàng.
+              </div>
+
+              <div
+                class="action-buttons"
+                style="display: flex; gap: 8px; flex-wrap: wrap"
+              >
+                <a href="profile.html#orders" class="btn btn-primary"
+                  >📋 Xem đơn hàng</a
+                >
+                <a href="index.html" class="btn btn-secondary"
+                  >🏠 Tiếp tục mua sắm</a
+                >
+                <button id="os-print-order" class="btn btn-success">
+                  🖨️ In đơn hàng
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="cart.js"></script>
   </body>
 </html>

@@ -397,7 +397,12 @@ function addToCart(bookId) {
   const currentUser = localStorage.getItem("currentUser");
   if (!currentUser) {
     alert("Bạn cần đăng nhập để xem giỏ hàng!");
-    window.location.href = "login.html";
+    const modal = document.getElementById("book-details-modal");
+    if (modal) modal.classList.remove("show");
+    document.body.style.overflow = "";
+
+    const authModal = document.getElementById("auth-modal");
+    if (authModal) authModal.classList.add("show");
     return; // Dừng hàm, không thêm vào giỏ hàng
   }
   const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
@@ -1065,7 +1070,6 @@ function initAuthModal() {
 
     const fullname = document.getElementById("reg-fullname").value.trim();
     const username = document.getElementById("reg-username").value.trim();
-    const email = document.getElementById("reg-email").value.trim();
     const phone = document.getElementById("reg-phone").value.trim();
     const password = document.getElementById("reg-password").value;
     const confirmPassword = document.getElementById(
@@ -1073,14 +1077,7 @@ function initAuthModal() {
     ).value;
 
     // Validation
-    if (
-      !fullname ||
-      !username ||
-      !email ||
-      !phone ||
-      !password ||
-      !confirmPassword
-    ) {
+    if (!fullname || !username || !phone || !password || !confirmPassword) {
       showError("register-error", "Vui lòng nhập đầy đủ thông tin!");
       return;
     }
@@ -1102,9 +1099,8 @@ function initAuthModal() {
       showError("register-error", "Tên đăng nhập đã tồn tại!");
       return;
     }
-
-    if (users.find((u) => u.email === email)) {
-      showError("register-error", "Email đã được sử dụng!");
+    if (!isValidPhone(phone)) {
+      showError("register-error", "Số điện thoại không hợp lệ!");
       return;
     }
 
@@ -1113,9 +1109,10 @@ function initAuthModal() {
       id: Date.now().toString(),
       fullname,
       username,
-      email,
       phone,
       password,
+      status: true,
+      role: "customer",
       createdAt: new Date().toISOString(),
     };
 
@@ -1160,7 +1157,13 @@ function initAuthModal() {
   // Update account display on page load
   updateAccountDisplay();
 }
-
+function isValidPhone(phone) {
+  // Remove spaces and dashes for validation
+  const cleanPhone = phone.replace(/[\s-]/g, "");
+  // Vietnamese phone number format: 10 digits starting with 0
+  const phoneRegex = /^0[3|5|7|8|9][0-9]{8}$/;
+  return phoneRegex.test(cleanPhone);
+}
 // Update cart badge function
 function updateCartBadge() {
   const badge = document.getElementById("cart-count");

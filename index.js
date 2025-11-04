@@ -1,16 +1,37 @@
 const LS_KEYS = {
   USERS: "USERS",
   CURRENT_USER: "currentUser",
-  CART: "cart_user",
-  CARTS: "carts",
-  ADDRESSES: "addresses_",
-  ALL_ADDRESSES: "ALL_ADDRESSES",
+  CART_USER: "cart_user",
+  CARTS: "Carts",
+  ADDRESSES_USER: "addresses_user",
+  ADDRESSES: "ALL_ADDRESSES",
   ORDERS: "orders",
   ORDER_DETAILS: "order_details",
   ORDERS_USER: "orders_user",
   ORDERS_DETAILS_USER: "order_details_user",
+  BOOKS: "BOOKS",
+  CATEGORIES: "CATEGORIES",
 };
-async function seedSampleCart() {
+function saveData(key, data) {
+  try {
+    console.log(`Đang lưu vào key "${key}":`, data);
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error("❌ Lỗi khi lưu dữ liệu:", error);
+  }
+}
+function loadData(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return []; // nếu chưa có dữ liệu thì trả về mảng rỗng
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error("❌ Lỗi khi load dữ liệu:", error);
+    return []; // fallback an toàn
+  }
+}
+
+async function loadAllDataToLocal() {
   if (!localStorage.getItem(LS_KEYS.CARTS)) {
     try {
       const res = await fetch("json/carts.json");
@@ -21,195 +42,91 @@ async function seedSampleCart() {
       console.error("Không thể load users.json", e);
     }
   }
-}
-
-// Load addresses from JSON file into centralized localStorage
-async function seedAddressesData() {
-  // Only load the central addresses list, don't create user-specific lists yet
-  if (!localStorage.getItem("ALL_ADDRESSES")) {
+  if (!localStorage.getItem(LS_KEYS.ADDRESSES)) {
     try {
       const response = await fetch("json/addresses.json");
       const addressesData = await response.json();
-
-      // Store all addresses in one centralized location
-      localStorage.setItem("ALL_ADDRESSES", JSON.stringify(addressesData));
+      localStorage.setItem(LS_KEYS.ADDRESSES, JSON.stringify(addressesData));
       console.log("✅ Loaded all addresses into central storage");
     } catch (error) {
       console.error("❌ Error loading addresses data:", error);
     }
   }
-}
 
-// Function to initialize user-specific addresses after login
-window.initializeUserAddresses = function initializeUserAddresses(userId) {
-  const userAddressKey = `addresses_${userId}`;
-
-  // Check if user already has addresses in localStorage
-  if (localStorage.getItem(userAddressKey)) {
-    return; // User already has addresses, don't overwrite
-  }
-
-  try {
-    // Get all addresses from central storage
-    const allAddresses = JSON.parse(
-      localStorage.getItem("ALL_ADDRESSES") || "[]"
-    );
-
-    // Filter addresses for this specific user
-    const userAddresses = allAddresses
-      .filter((address) => address.user_id === userId)
-      .map((address) => ({
-        id: address.id,
-        name: address.receiver_name,
-        phone: address.phone,
-        street: address.address_line1,
-        ward: address.ward,
-        district: address.district.toLowerCase().replace(/\s+/g, "-"),
-        city: mapProvinceToCity(address.province),
-        isDefault: address.is_default,
-        created_at: address.created_at,
-        updated_at: address.updated_at,
-      }));
-
-    // Store user's addresses in their specific localStorage key
-    if (userAddresses.length > 0) {
-      localStorage.setItem(userAddressKey, JSON.stringify(userAddresses));
-      console.log(
-        `✅ Initialized ${userAddresses.length} addresses for user ${userId}`
+  if (!localStorage.getItem(LS_KEYS.CATEGORIES)) {
+    try {
+      const response = await fetch("json/categories.json");
+      const categories = await response.json();
+      const activeCategories = categories.filter((cat) => cat.status);
+      localStorage.setItem(
+        LS_KEYS.CATEGORIES,
+        JSON.stringify(activeCategories)
       );
-    }
-  } catch (error) {
-    console.error(`❌ Error initializing addresses for user ${userId}:`, error);
-  }
-};
-
-// Helper function to map province names to city codes
-function mapProvinceToCity(province) {
-  const provinceMap = {
-    "Ha Noi": "hanoi",
-    "Hà Nội": "hanoi",
-    "TP Ho Chi Minh": "hcm",
-    "TP. Hồ Chí Minh": "hcm",
-    "Ho Chi Minh": "hcm",
-    "Da Nang": "danang",
-    "Đà Nẵng": "danang",
-    "Hai Phong": "haiphong",
-    "Hải Phòng": "haiphong",
-    "Can Tho": "cantho",
-    "Cần Thơ": "cantho",
-  };
-
-  return provinceMap[province] || province.toLowerCase().replace(/\s+/g, "-");
-}
-
-// Utility function to force reload addresses (can be called from console)
-window.reloadAddressesFromJSON = async function () {
-  try {
-    // Clear central addresses storage
-    localStorage.removeItem("ALL_ADDRESSES");
-
-    // Clear existing user-specific addresses
-    Object.keys(localStorage).forEach((key) => {
-      if (key.startsWith("addresses_")) {
-        localStorage.removeItem(key);
-      }
-    });
-
-    // Reload from JSON
-    await seedAddressesData();
-    console.log("✅ Addresses reloaded from JSON successfully!");
-
-    // Re-initialize current user's addresses if logged in
-    const currentUser = JSON.parse(
-      localStorage.getItem("currentUser") || "null"
-    );
-    if (currentUser && currentUser.id) {
-      initializeUserAddresses(currentUser.id);
-      console.log(
-        `✅ Re-initialized addresses for current user ${currentUser.id}`
+      console.log("✅ Loaded categories into local storage");
+    } catch (error) {
+      console.error("❌ Error loading categories:", error);
+      // fallback từ localStorage
+      const fallback = JSON.parse(
+        localStorage.getItem(LS_KEYS.CATEGORIES) || "[]"
       );
+      localStorage.setItem(LS_KEYS.CATEGORIES, JSON.stringify(fallback));
     }
-
-    return true;
-  } catch (error) {
-    console.error("❌ Error reloading addresses:", error);
-    return false;
   }
-};
-
-// Utility function to view current addresses in localStorage (debug)
-window.viewStoredAddresses = function () {
-  console.log("📍 All Addresses Storage:");
-  const allAddresses = JSON.parse(
-    localStorage.getItem("ALL_ADDRESSES") || "[]"
-  );
-  console.log("Central storage:", allAddresses);
-
-  console.log("\n📍 User-specific Addresses:");
-  const addressKeys = Object.keys(localStorage).filter((key) =>
-    key.startsWith("addresses_")
-  );
-  addressKeys.forEach((key) => {
-    const userId = key.replace("addresses_", "");
-    const addresses = JSON.parse(localStorage.getItem(key) || "[]");
-    console.log(`User ${userId}:`, addresses);
-  });
-};
-
-// Utility function to initialize addresses for a specific user (can be called from console)
-window.initUserAddresses = function (userId) {
-  try {
-    initializeUserAddresses(userId);
-    console.log(`✅ Initialized addresses for user ${userId}`);
-  } catch (error) {
-    console.error(`❌ Error initializing addresses for user ${userId}:`, error);
-  }
-};
-// Thêm hàm loadCategories
-async function loadCategories() {
-  try {
-    const response = await fetch("json/categories.json");
-    const categories = await response.json();
-    CATEGORIES = categories.filter((cat) => cat.status);
-    localStorage.setItem("CATEGORIES", JSON.stringify(CATEGORIES));
-    return CATEGORIES;
-  } catch (error) {
-    console.error("Error loading categories:", error);
-    // Fallback từ localStorage
-    CATEGORIES = JSON.parse(localStorage.getItem("CATEGORIES") || "[]");
-    return CATEGORIES;
-  }
-}
-// Khởi tạo users từ users.json chỉ 1 lần
-async function ensureUsersSeeded() {
   if (!localStorage.getItem(LS_KEYS.USERS)) {
     try {
       const res = await fetch("json/users.json");
       const data = await res.json();
       localStorage.setItem(LS_KEYS.USERS, JSON.stringify(data));
-      // console.log("Seed USERS from users.json");
+      console.log("✅ Seed USERS from users.json");
     } catch (e) {
-      console.error("Không thể load users.json", e);
+      console.error("❌ Không thể load users.json", e);
+    }
+  }
+  if (!localStorage.getItem(LS_KEYS.BOOKS)) {
+    try {
+      const res = await fetch("json/books.json");
+      const books = await res.json();
+      localStorage.setItem(LS_KEYS.BOOKS, JSON.stringify(books));
+      console.log("✅ Loaded books into local storage");
+    } catch (err) {
+      console.error("❌ Không thể load books.json:", err);
+    }
+  }
+  if (!localStorage.getItem(LS_KEYS.ORDERS)) {
+    try {
+      const res = await fetch("json/orders.json");
+      const data = await res.json();
+      localStorage.setItem(LS_KEYS.ORDERS, JSON.stringify(data));
+      console.log("✅ Đã load orders.json lên localStorage");
+    } catch (err) {
+      console.error("❌ Không thể load json/orders.json:", err);
+      localStorage.setItem(LS_KEYS.ORDERS, JSON.stringify([]));
+    }
+  }
+  if (!localStorage.getItem(LS_KEYS.ORDER_DETAILS)) {
+    try {
+      const res = await fetch("json/order_details.json");
+      const data = await res.json();
+      localStorage.setItem(LS_KEYS.ORDER_DETAILS, JSON.stringify(data));
+      console.log("✅ Đã load order_details.json lên localStorage");
+    } catch (err) {
+      console.error("❌ Không thể load json/order_details.json:", err);
+      localStorage.setItem(LS_KEYS.ORDER_DETAILS, JSON.stringify([]));
     }
   }
 }
-async function initBooksData() {
-  const KEY = "BOOKS";
-  if (!localStorage.getItem(KEY)) {
-    try {
-      const res = await fetch("json/books.json");
-      const data = await res.json();
-      localStorage.setItem(KEY, JSON.stringify(data));
-    } catch (err) {
-      console.error("Không thể load json/books.json:", err);
-    }
-  }
+function generateIncrementNumber(list) {
+  const maxNum = list.reduce((max, item) => {
+    const num = parseInt(item.id, 10); // giả sử id chỉ là số
+    return isNaN(num) ? max : Math.max(max, num);
+  }, 0);
+  return maxNum + 1;
 }
 
 async function initBooksDataAndRender() {
-  await initBooksData();
+  await loadAllDataToLocal();
   // Sau khi chắc chắn dữ liệu đã có, cập nhật BOOKS và render
-  window.BOOKS = JSON.parse(localStorage.getItem("BOOKS") || "[]");
+  window.BOOKS = loadData(LS_KEYS.BOOKS);
   renderBooks();
 }
 
@@ -217,26 +134,12 @@ async function initBooksDataAndRender() {
 document.addEventListener("DOMContentLoaded", function () {
   updateCartUI();
 });
-
-// Lưu giỏ hàng vào localStorage
-function saveCart(cart) {
-  localStorage.setItem("cart_user1", JSON.stringify(cart));
-}
-
-// Lấy giỏ hàng từ localStorage
-function loadCart() {
-  const savedCart = localStorage.getItem("cart_user1");
-  if (savedCart) {
-    cart = JSON.parse(savedCart);
-  }
-}
-
 // Render danh sách sách
 function renderBooks(booksToShow = null) {
   const container = document.getElementById("book-list");
   container.innerHTML = "";
 
-  const BOOKS = JSON.parse(localStorage.getItem("BOOKS") || "[]");
+  const BOOKS = loadData(LS_KEYS.BOOKS);
   booksToShow = booksToShow || BOOKS;
 
   // LỌC SÁCH CÓ STATUS = TRUE TRƯỚC KHI TÍNH PAGINATION
@@ -394,8 +297,11 @@ function renderPagination(booksList) {
 
 // Thêm vào giỏ
 function addToCart(bookId) {
-  const currentUser = localStorage.getItem("currentUser");
-  if (!currentUser) {
+  const currentUser = loadData(LS_KEYS.CURRENT_USER);
+  if (
+    !currentUser ||
+    (Array.isArray(currentUser) && currentUser.length === 0)
+  ) {
     alert("Bạn cần đăng nhập để xem giỏ hàng!");
     const modal = document.getElementById("book-details-modal");
     if (modal) modal.classList.remove("show");
@@ -405,7 +311,7 @@ function addToCart(bookId) {
     if (authModal) authModal.classList.add("show");
     return; // Dừng hàm, không thêm vào giỏ hàng
   }
-  const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
+  const cart = loadData(LS_KEYS.CART_USER);
   const item = cart.find((i) => String(i.bookId) === String(bookId));
 
   if (item) {
@@ -413,7 +319,7 @@ function addToCart(bookId) {
   } else {
     cart.push({ bookId, quantity: 1, selected: true });
   }
-  saveCart(cart);
+  saveData(LS_KEYS.CART_USER, cart);
   updateCartsWithCurrentUserCart();
   updateCartUI();
   alert("Đã thêm vào giỏ hàng!");
@@ -421,16 +327,14 @@ function addToCart(bookId) {
 
 // Cập nhật giao diện giỏ hàng
 function updateCartUI() {
-  const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
+  const cart = loadData(LS_KEYS.CART_USER);
   const countEl = document.getElementById("cart-count");
   countEl.textContent = cart.reduce((s, i) => s + i.quantity, 0);
 }
 
 // Cập nhật hiển thị tài khoản trong header
 function updateAccountUI() {
-  const currentUser = JSON.parse(
-    localStorage.getItem(LS_KEYS.CURRENT_USER) || "null"
-  );
+  const currentUser = loadData(LS_KEYS.CURRENT_USER);
   const accountBtn = document.getElementById("account-btn");
   const accountName = document.getElementById("account-name");
 
@@ -453,7 +357,7 @@ const booksPerPage = 8;
 
 // Render categories từ dữ liệu JSON
 function renderCategories() {
-  const categories = JSON.parse(localStorage.getItem("CATEGORIES") || "[]");
+  const categories = loadData(LS_KEYS.CATEGORIES);
   const container = document.getElementById("category-tags");
 
   if (!container) return;
@@ -495,19 +399,11 @@ function renderCategories() {
     });
 }
 
-async function seedAllData() {
-  await ensureUsersSeeded();
-  await seedSampleCart();
-  await initBooksData();
-  await loadCategories();
-  await seedAddressesData();
-}
-
 // Gọi hàm này khi mở trang
 document.addEventListener("DOMContentLoaded", async function () {
-  await seedAllData();
+  await loadAllDataToLocal();
 
-  const BOOKS = JSON.parse(localStorage.getItem("BOOKS") || "[]");
+  const BOOKS = loadData(LS_KEYS.BOOKS);
 
   // Render categories và books
   renderCategories();
@@ -534,13 +430,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 function updateCartsWithCurrentUserCart() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "null");
+  const currentUser = loadData(LS_KEYS.CURRENT_USER);
   if (!currentUser) return;
 
   // Lấy danh sách carts từ localStorage
-  let carts = JSON.parse(localStorage.getItem(LS_KEYS.CARTS) || "[]");
+  let carts = loadData(LS_KEYS.CARTS);
   // Lấy giỏ hàng hiện tại của user
-  const userCartItems = JSON.parse(localStorage.getItem("cart_user1") || "[]");
+  const userCartItems = loadData(LS_KEYS.CART_USER);
 
   // Tìm cart của user trong danh sách carts
   let cartObj = carts.find((c) => c.user_id === currentUser.id);
@@ -548,16 +444,13 @@ function updateCartsWithCurrentUserCart() {
   if (cartObj) {
     // Nếu đã có, cập nhật items và updated_at
     cartObj.items = userCartItems;
-    cartObj.updated_at = new Date().toISOString();
   } else {
     // Nếu chưa có, tạo mới cart cho user này
     cartObj = {
-      id: Date.now(),
+      id: generateIncrementNumber(carts),
       user_id: currentUser.id,
       session_id: null,
       status: "active",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
       items: userCartItems,
     };
     carts.push(cartObj);
@@ -579,7 +472,7 @@ function filterBooks() {
   const priceRange = document.getElementById("price-filter").value;
   const activeCategory = document.querySelector(".category-tag.active").dataset
     .category;
-  const BOOKS = JSON.parse(localStorage.getItem("BOOKS") || "[]");
+  const BOOKS = loadData(LS_KEYS.BOOKS);
 
   // Lọc sách có status = true
   let filtered = BOOKS.filter((book) => book.status !== false);
@@ -603,7 +496,7 @@ function filterBooks() {
 
   // Lọc theo category
   if (activeCategory !== "all") {
-    const categories = JSON.parse(localStorage.getItem("CATEGORIES") || "[]");
+    const categories = loadData(LS_KEYS.CATEGORIES);
     filtered = filtered.filter((book) => {
       // book.category_ids chứa các ID, cần tìm category có name tương ứng
       return (
@@ -649,8 +542,6 @@ function viewBookDetails(bookId) {
     console.warn(
       "showBookDetailsModal not available, falling back to page redirect"
     );
-    // Fallback to page redirect if modal not ready
-    window.location.href = `viewBookDetails.html?id=${bookId}`;
   }
 }
 
@@ -779,52 +670,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ====== HELPER FUNCTIONS FROM LOGIN.JS ======
-function genId() {
-  return Date.now() + Math.random().toString(36).substr(2, 9);
-}
-
-function wrteUserAddresses(items) {
-  localStorage.setItem(LS_KEYS.ADDRESSES + "1", JSON.stringify(items || []));
-}
-
-function writeUserCartItems(userId, items) {
-  localStorage.setItem(LS_KEYS.CART + "1", JSON.stringify(items || []));
-}
-
-async function loadOrdersToLocalStorage() {
-  if (!localStorage.getItem(LS_KEYS.ORDERS)) {
-    try {
-      const res = await fetch("json/orders.json");
-      const data = await res.json();
-      localStorage.setItem(LS_KEYS.ORDERS, JSON.stringify(data));
-      console.log("✅ Đã load orders.json lên localStorage");
-    } catch (err) {
-      console.error("❌ Không thể load json/orders.json:", err);
-      localStorage.setItem(LS_KEYS.ORDERS, JSON.stringify([]));
-    }
-  }
-  if (!localStorage.getItem(LS_KEYS.ORDER_DETAILS)) {
-    try {
-      const res = await fetch("json/order_details.json");
-      const data = await res.json();
-      localStorage.setItem(LS_KEYS.ORDER_DETAILS, JSON.stringify(data));
-      console.log("✅ Đã load order_details.json lên localStorage");
-    } catch (err) {
-      console.error("❌ Không thể load json/order_details.json:", err);
-      localStorage.setItem(LS_KEYS.ORDER_DETAILS, JSON.stringify([]));
-    }
-  }
-}
 
 function getOrCreateOrders_Order_DetailForCurrentUser() {
-  const user = JSON.parse(localStorage.getItem(LS_KEYS.CURRENT_USER) || "null");
+  const user = loadData(LS_KEYS.CURRENT_USER);
   if (!user) return null;
 
-  let allOrders = JSON.parse(localStorage.getItem(LS_KEYS.ORDERS) || "[]");
+  let allOrders = loadData(LS_KEYS.ORDERS);
   let userOrders = allOrders.filter((order) => order.user_id === user.id);
-  let allOrderDetails = JSON.parse(
-    localStorage.getItem(LS_KEYS.ORDER_DETAILS) || "[]"
-  );
+  let allOrderDetails = loadData(LS_KEYS.ORDER_DETAILS);
   let userOrderDetails = allOrderDetails.filter((detail) =>
     userOrders.some((order) => order.id === detail.order_id)
   );
@@ -833,63 +686,55 @@ function getOrCreateOrders_Order_DetailForCurrentUser() {
     userOrders = [];
     userOrderDetails = [];
   }
-
-  localStorage.setItem(LS_KEYS.ORDERS_USER, JSON.stringify(userOrders));
-  localStorage.setItem(
-    LS_KEYS.ORDERS_DETAILS_USER,
-    JSON.stringify(userOrderDetails)
-  );
+  saveData(LS_KEYS.ORDERS_USER, userOrders);
+  saveData(LS_KEYS.ORDERS_DETAILS_USER, userOrderDetails);
 
   return { userOrders, userOrderDetails };
 }
 
-function saveCarts(carts) {
-  localStorage.setItem(LS_KEYS.CARTS, JSON.stringify(carts));
-}
-
 function getOrCreateAddressesForCurrentUser() {
-  const user = JSON.parse(localStorage.getItem(LS_KEYS.CURRENT_USER) || "null");
+  const user = loadData(LS_KEYS.CURRENT_USER);
   if (!user) return null;
 
-  let allAddresses = JSON.parse(
-    localStorage.getItem(LS_KEYS.ALL_ADDRESSES) || "[]"
-  );
+  let allAddresses = loadData(LS_KEYS.ADDRESSES);
   let userAddresses = allAddresses.filter(
     (address) => address.user_id === user.id
   );
 
   if (userAddresses.length > 0) {
-    wrteUserAddresses(userAddresses);
+    saveData(LS_KEYS.ADDRESSES_USER, userAddresses);
     return userAddresses;
   }
 
   console.log(`📭 Không tìm thấy địa chỉ cho người dùng ${user.id}`);
-  wrteUserAddresses([]);
+  saveData(LS_KEYS.ADDRESSES_USER, []);
+
   return [];
 }
 
 function getOrCreateCartForCurrentUser() {
-  const user = JSON.parse(localStorage.getItem(LS_KEYS.CURRENT_USER) || "null");
+  const user = loadData(LS_KEYS.CURRENT_USER);
   if (!user) return null;
 
-  let carts = JSON.parse(localStorage.getItem(LS_KEYS.CARTS) || "[]");
+  let carts = loadData(LS_KEYS.CARTS);
   let cart = carts.find((c) => c.user_id === user.id);
 
   if (cart) {
     if (!Array.isArray(cart.items)) cart.items = [];
-    writeUserCartItems(user.id, cart.items);
+
+    saveData(LS_KEYS.CART_USER, cart.items);
     return cart;
   }
 
   cart = {
-    id: genId(),
+    id: generateIncrementNumber(carts),
     user_id: user.id,
     status: "ACTIVE",
     items: [],
   };
   carts.push(cart);
-  saveCarts(carts);
-  writeUserCartItems(user.id, cart.items);
+  saveData(LS_KEYS.CARTS, carts);
+  saveData(LS_KEYS.CART_USER, cart.items);
   return cart;
 }
 
@@ -906,10 +751,11 @@ function initAuthModal() {
 
   // Show modal when clicking account button (only if not logged in)
   accountBtn.addEventListener("click", (e) => {
-    const currentUser = JSON.parse(
-      localStorage.getItem(LS_KEYS.CURRENT_USER) || "null"
-    );
-    if (!currentUser) {
+    const currentUser = loadData(LS_KEYS.CURRENT_USER);
+    if (
+      !currentUser ||
+      (Array.isArray(currentUser) && currentUser.length === 0)
+    ) {
       e.preventDefault();
       showModal("login");
     }
@@ -1018,18 +864,21 @@ function initAuthModal() {
     }
 
     // Get users from localStorage (đồng bộ với login.js)
-    const users = JSON.parse(localStorage.getItem(LS_KEYS.USERS) || "[]");
+    const users = loadData(LS_KEYS.USERS);
 
     // Find user by username (không email như login.js)
     const user = users.find(
       (u) => u.username === username && u.password === password
     );
 
-    if (!user) {
+    if (!user || user.role === "admin") {
       showError("login-error", "Sai tên đăng nhập hoặc mật khẩu!");
       return;
     }
-
+    if (!user.status) {
+      showError("login-error", "Sai tên đăng nhập hoặc mật khẩu!");
+      return;
+    }
     // Save current user (đồng bộ với login.js)
     localStorage.setItem(
       LS_KEYS.CURRENT_USER,
@@ -1040,7 +889,6 @@ function initAuthModal() {
         full_name: user.full_name,
         role: user.role,
         phone: user.phone,
-        email: user.email,
       })
     );
 
@@ -1048,7 +896,8 @@ function initAuthModal() {
 
     // Load orders và tạo dữ liệu cho user (đồng bộ với login.js)
     try {
-      await loadOrdersToLocalStorage();
+      updateCartUI();
+      await loadAllDataToLocal();
       await getOrCreateOrders_Order_DetailForCurrentUser();
       getOrCreateCartForCurrentUser();
       getOrCreateAddressesForCurrentUser();
@@ -1106,7 +955,7 @@ function initAuthModal() {
 
     // Create new user
     const newUser = {
-      id: Date.now().toString(),
+      id: generateIncrementNumber(users),
       fullname,
       username,
       phone,
@@ -1134,9 +983,7 @@ function initAuthModal() {
   }
 
   function updateAccountDisplay() {
-    const currentUser = JSON.parse(
-      localStorage.getItem(LS_KEYS.CURRENT_USER) || "null"
-    );
+    const currentUser = loadData(LS_KEYS.CURRENT_USER);
 
     const accountBtn = document.getElementById("account-btn");
     const accountName = document.getElementById("account-name");
@@ -1165,17 +1012,6 @@ function isValidPhone(phone) {
   return phoneRegex.test(cleanPhone);
 }
 // Update cart badge function
-function updateCartBadge() {
-  const badge = document.getElementById("cart-count");
-  if (!badge) return;
-
-  const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
-  const totalQuantity = cart.reduce(
-    (sum, item) => sum + (item.quantity || 0),
-    0
-  );
-  badge.textContent = totalQuantity;
-}
 
 // Close modal with Escape key
 document.addEventListener("keydown", (e) => {
@@ -1217,11 +1053,6 @@ function initBookDetailsModal() {
     document.body.style.overflow = "";
   }
 
-  function hideBookModal() {
-    modal.classList.remove("show");
-    document.body.style.overflow = "";
-  }
-
   // Modal is now ready - global function is already defined above
   console.log("Book details modal initialized successfully");
 }
@@ -1231,11 +1062,10 @@ window.showBookDetailsModal = async function (bookId) {
   console.log("Global showBookDetailsModal called with ID:", bookId);
 
   // Make sure data is loaded
-  await initBooksData();
-  await loadCategories();
+  await loadAllDataToLocal();
 
   // Find the book
-  const books = JSON.parse(localStorage.getItem("BOOKS") || "[]");
+  const books = loadData(LS_KEYS.BOOKS);
   const book = books.find((book) => String(book.id) === String(bookId));
 
   if (!book) {
@@ -1371,7 +1201,7 @@ function renderModalInfoTable(book) {
     if (!categoryIds || !Array.isArray(categoryIds)) return "—";
 
     try {
-      const categories = JSON.parse(localStorage.getItem("CATEGORIES") || "[]");
+      const categories = loadData(LS_KEYS.CATEGORIES);
       const categoryNames = categoryIds
         .map((id) => {
           const category = categories.find((cat) => cat.id === id);
@@ -1426,7 +1256,7 @@ function addToCartFromModal(bookId, qty) {
     return;
   }
 
-  const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
+  const cart = loadData(LS_KEYS.CART_USER);
   const existingItem = cart.find(
     (item) => String(item.bookId) === String(bookId)
   );
@@ -1436,9 +1266,8 @@ function addToCartFromModal(bookId, qty) {
   } else {
     cart.push({ bookId, quantity: qty, selected: true });
   }
-
-  localStorage.setItem("cart_user1", JSON.stringify(cart));
-  updateCartBadge();
+  saveData(LS_KEYS.CART_USER, cart);
+  updateCartUI();
 
   const modal = document.getElementById("book-details-modal");
   if (modal) {
@@ -1461,7 +1290,7 @@ function buyNowFromModal(bookId, qty) {
     return;
   }
 
-  const cart = JSON.parse(localStorage.getItem("cart_user1") || "[]");
+  const cart = loadData(LS_KEYS.CART_USER);
 
   // Bỏ chọn tất cả sản phẩm hiện có
   cart.forEach((item) => {
@@ -1478,9 +1307,8 @@ function buyNowFromModal(bookId, qty) {
   } else {
     cart.push({ bookId, quantity: qty, selected: true });
   }
-
-  localStorage.setItem("cart_user1", JSON.stringify(cart));
-  updateCartBadge();
+  saveData(LS_KEYS.CART_USER, cart);
+  updateCartUI();
 
   const modal = document.getElementById("book-details-modal");
   if (modal) {
@@ -1498,14 +1326,14 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Initializing book details modal...");
 
     // Check if book data is available
-    const books = JSON.parse(localStorage.getItem("BOOKS") || "[]");
-    const categories = JSON.parse(localStorage.getItem("CATEGORIES") || "[]");
+    const books = loadData(LS_KEYS.BOOKS);
+    const categories = loadData(LS_KEYS.CATEGORIES);
     console.log("Books available:", books.length);
     console.log("Categories available:", categories.length);
 
     initBookDetailsModal();
 
     // Also update cart badge on page load
-    updateCartBadge();
+    updateCartUI();
   }, 200);
 });

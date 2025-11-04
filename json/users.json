@@ -26,8 +26,8 @@
   {
     "id": 3,
     "username": "admin",
-    "password": "hashed_pw_3",
-    "full_name": "Site Admin",
+    "password": "admin123",
+    "full_name": "Admin",
     "phone": "0988001122",
     "role": "admin",
     "status": true,

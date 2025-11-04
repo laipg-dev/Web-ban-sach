@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản trị hệ thống - Nhà sách</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <!-- Login Page -->
+    <!-- Trang đăng nhập -->
     <div id="loginPage" class="login-page">
         <div class="admin-login-container">
             <div class="admin-login-header">
-                <div class="admin-icon"><i class="fas fa-shield-halved"></i></div>
+                <div class="admin-icon"><i class="fa-solid fa-lock"></i></div>
                 <h1>Quản trị viên</h1>
                 <p>Đăng nhập vào hệ thống quản lý</p>
             </div>
@@ -34,57 +34,57 @@
             </form>
 
             <div class="back-to-home">
-                <a href="../index.html">← Quay lại trang chủ</a>
+                <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
             </div>
         </div>
     </div>
 
-    <!-- Admin Dashboard Page -->
+    <!-- Trang quản trị -->
     <div id="adminPage" class="admin-page">
         <div class="admin-wrapper">
-        <!-- Sidebar -->
+        <!-- Thanh bên -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2><i class="fas fa-store"></i> Quản trị</h2>
+                <h2><i class="fa-solid fa-user-shield"></i> Quản trị viên</h2>
                 <p id="admin-name">Admin</p>
             </div>
             <div class="sidebar-menu">
                 <div class="menu-item active" data-section="dashboard">
-                    <span class="menu-item-icon"><i class="fas fa-chart-line"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-chart-line"></i></span>
                     <span>Tổng quan</span>
                 </div>
                 <div class="menu-item" data-section="users">
-                    <span class="menu-item-icon"><i class="fas fa-users"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-users"></i></span>
                     <span>Quản lý người dùng</span>
                 </div>
                 <div class="menu-item" data-section="categories">
-                    <span class="menu-item-icon"><i class="fas fa-layer-group"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-folder"></i></span>
                     <span>Quản lý loại sản phẩm</span>
                 </div>
                 <div class="menu-item" data-section="products">
-                    <span class="menu-item-icon"><i class="fas fa-book"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-book"></i></span>
                     <span>Quản lý sản phẩm</span>
                 </div>
                 <div class="menu-item" data-section="imports">
-                    <span class="menu-item-icon"><i class="fas fa-truck-ramp-box"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-download"></i></span>
                     <span>Quản lý nhập hàng</span>
                 </div>
                 <div class="menu-item" data-section="pricing">
-                    <span class="menu-item-icon"><i class="fas fa-tags"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-dollar-sign"></i></span>
                     <span>Quản lý giá bán</span>
                 </div>
                 <div class="menu-item" data-section="orders">
-                    <span class="menu-item-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-shopping-cart"></i></span>
                     <span>Quản lý đơn hàng</span>
                 </div>
                 <div class="menu-item" data-section="inventory">
-                    <span class="menu-item-icon"><i class="fas fa-boxes-stacked"></i></span>
+                    <span class="menu-item-icon"><i class="fa-solid fa-box"></i></span>
                     <span>Quản lý tồn kho</span>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Nội dung chính -->
         <div class="main-content">
             <div class="top-bar">
                 <h1 id="page-title">Tổng quan</h1>
@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <!-- Dashboard Section -->
+            <!-- Phần tổng quan -->
             <div id="dashboard" class="content-section active">
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -137,13 +137,13 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h2>⚠️ Cảnh báo sản phẩm sắp hết hàng</h2>
+                        <h2><i class="fa-solid fa-triangle-exclamation"></i> Cảnh báo sản phẩm sắp hết hàng</h2>
                     </div>
                     <div id="low-stock-alerts"></div>
                 </div>
             </div>
 
-            <!-- Users Management Section -->
+            <!-- Phần quản lý người dùng -->
             <div id="users" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -176,7 +176,7 @@
                 </div>
             </div>
 
-            <!-- Categories Management Section -->
+            <!-- Phần quản lý loại sản phẩm -->
             <div id="categories" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -201,7 +201,7 @@
                 </div>
             </div>
 
-            <!-- Products Management Section -->
+            <!-- Phần quản lý sản phẩm -->
             <div id="products" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -238,7 +238,7 @@
                 </div>
             </div>
 
-            <!-- Imports Management Section -->
+            <!-- Phần quản lý nhập hàng -->
             <div id="imports" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -270,7 +270,7 @@
                 </div>
             </div>
 
-            <!-- Pricing Management Section -->
+            <!-- Phần quản lý giá bán -->
             <div id="pricing" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -317,7 +317,7 @@
                 </div>
             </div>
 
-            <!-- Orders Management Section -->
+            <!-- Phần quản lý đơn hàng -->
             <div id="orders" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -355,7 +355,7 @@
                 </div>
             </div>
 
-            <!-- Inventory Management Section -->
+            <!-- Phần quản lý tồn kho -->
             <div id="inventory" class="content-section">
                 <div class="card">
                     <div class="card-header">
@@ -405,8 +405,8 @@
         </div>
     </div>
 
-    <!-- Modals -->
-    <!-- Category Modal -->
+    <!-- Các modal -->
+    <!-- Modal loại sản phẩm -->
     <div id="categoryModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -441,7 +441,7 @@
         </div>
     </div>
 
-    <!-- Product Modal -->
+    <!-- Modal sản phẩm -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -513,7 +513,7 @@
         </div>
     </div>
 
-    <!-- Import Modal -->
+    <!-- Modal phiếu nhập hàng -->
     <div id="importModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -543,7 +543,7 @@
         </div>
     </div>
 
-    <!-- Order Detail Modal -->
+    <!-- Modal chi tiết đơn hàng -->
     <div id="orderDetailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">

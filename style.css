@@ -1,3 +1,6 @@
+/* ===== IMPORT CSS BỔ SUNG CHO 3 FILE HTML ===== */
+@import url("page-sections.css");
+
 :root {
   --bg: #f6f7fb;
   --card: #fff;
@@ -4837,4 +4840,12 @@ body.no-scroll {
   padding: 8px 10px;
   font-size: 14px;
   border-radius: 10px;
+}
+
+/* Style riêng cho checkbox */
+.checkout-form-group input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+  margin-right: 6px; /* tạo khoảng cách với text */
 }

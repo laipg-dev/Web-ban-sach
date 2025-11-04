@@ -28,7 +28,7 @@
   },
   {
     "id": 4,
-    "user_id": 3,
+    "user_id": 2,
     "address_id": 2,
     "status": "delivered",
     "total_amount": 89000,
@@ -55,9 +55,9 @@
   },
   {
     "id": 7,
-    "user_id": 4,
+    "user_id": 2,
     "address_id": 4,
-    "status": "shipped",
+    "status": "delivered",
     "total_amount": 95000,
     "payment_method": "vnpay",
     "created_at": "2025-10-08T13:22:00Z"
@@ -73,9 +73,9 @@
   },
   {
     "id": 9,
-    "user_id": 3,
+    "user_id": 1,
     "address_id": 2,
-    "status": "paid",
+    "status": "processing",
     "total_amount": 165000,
     "payment_method": "cod",
     "created_at": "2025-10-10T15:45:00Z"
@@ -100,7 +100,7 @@
   },
   {
     "id": 12,
-    "user_id": 4,
+    "user_id": 1,
     "address_id": 4,
     "status": "processing",
     "total_amount": 380000,

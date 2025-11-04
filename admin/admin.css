@@ -5,11 +5,11 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    background-attachment: fixed;
-}
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background-attachment: fixed;
+    }
 
 /* Styles cho trang đăng nhập */
 .login-page {
@@ -32,10 +32,7 @@ body {
     animation: backgroundMove 20s linear infinite;
 }
 
-@keyframes backgroundMove {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(50px, 50px); }
-}
+
 
 .admin-login-container {
     background: rgba(255, 255, 255, 0.95);

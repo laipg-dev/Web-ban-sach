@@ -65,10 +65,6 @@
                     <span class="menu-item-icon"><i class="fa-solid fa-book"></i></span>
                     <span>Quản lý sản phẩm</span>
                 </div>
-                <div class="menu-item" data-section="imports">
-                    <span class="menu-item-icon"><i class="fa-solid fa-download"></i></span>
-                    <span>Quản lý nhập hàng</span>
-                </div>
                 <div class="menu-item" data-section="pricing">
                     <span class="menu-item-icon"><i class="fa-solid fa-dollar-sign"></i></span>
                     <span>Quản lý giá bán</span>
@@ -228,38 +224,6 @@
                                     <th>Loại</th>
                                     <th>Giá</th>
                                     <th>Tồn kho</th>
-                                    <th>Trạng thái</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Phần quản lý nhập hàng -->
-            <div id="imports" class="content-section">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Quản lý phiếu nhập hàng</h2>
-                        <button class="btn btn-primary" onclick="showAddImportModal()">+ Tạo phiếu nhập</button>
-                    </div>
-                    <div class="search-filter-bar">
-                        <input type="text" class="search-box" id="search-imports" placeholder="Tìm kiếm phiếu nhập...">
-                        <select id="filter-import-status" class="form-control">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="draft">Nháp</option>
-                            <option value="completed">Đã hoàn thành</option>
-                        </select>
-                    </div>
-                    <div class="table-container">
-                        <table id="imports-table">
-                            <thead>
-                                <tr>
-                                    <th>Mã phiếu</th>
-                                    <th>Ngày nhập</th>
-                                    <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
                                 </tr>
@@ -513,36 +477,6 @@
                     </label>
                 </div>
                 <button type="submit" class="btn btn-primary">Lưu</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal phiếu nhập hàng -->
-    <div id="importModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="importModalTitle">Tạo phiếu nhập hàng</h2>
-                <button class="close-modal" onclick="closeModal('importModal')">&times;</button>
-            </div>
-            <form id="importForm">
-                <input type="hidden" id="import-id">
-                <div class="form-group">
-                    <label>Ngày nhập *</label>
-                    <input type="date" id="import-date" required>
-                </div>
-                <div class="form-group">
-                    <label>Ghi chú</label>
-                    <textarea id="import-note"></textarea>
-                </div>
-                <h3>Chi tiết nhập hàng</h3>
-                <div id="import-items-container"></div>
-                <button type="button" class="btn btn-success" onclick="addImportItem()">+ Thêm sản phẩm</button>
-                <hr>
-                <div class="form-group">
-                    <strong>Tổng tiền: <span id="import-total">0</span> VNĐ</strong>
-                </div>
-                <button type="submit" class="btn btn-primary">Lưu nháp</button>
-                <button type="button" class="btn btn-success" onclick="completeImport()">Hoàn thành phiếu nhập</button>
             </form>
         </div>
     </div>

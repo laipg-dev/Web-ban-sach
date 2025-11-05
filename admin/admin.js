@@ -7,7 +7,6 @@ const STORAGE_KEYS = {
   ORDERS: "orders",
   ORDER_DETAILS: "order_details",
   ADDRESSES: "ALL_ADDRESSES",
-  IMPORTS: "imports",
   INVENTORY_TRANSACTIONS: "inventory_transactions",
   PROFIT_MARGINS: "profit_margins",
 };
@@ -29,8 +28,6 @@ function normalizeKey(key) {
     ALL_ADDRESSES: STORAGE_KEYS.ADDRESSES,
     addresses: STORAGE_KEYS.ADDRESSES,
     admin_addresses: STORAGE_KEYS.ADDRESSES,
-    imports: STORAGE_KEYS.IMPORTS,
-    admin_imports: STORAGE_KEYS.IMPORTS,
     inventory_transactions: STORAGE_KEYS.INVENTORY_TRANSACTIONS,
     admin_inventory_transactions: STORAGE_KEYS.INVENTORY_TRANSACTIONS,
     profit_margins: STORAGE_KEYS.PROFIT_MARGINS,
@@ -50,7 +47,6 @@ let categories = [];
 let orders = [];
 let orderDetails = [];
 let addresses = [];
-let imports = [];
 let profitMargins = [];
 let inventoryTransactions = [];
 
@@ -196,24 +192,12 @@ async function loadAllData() {
     }
     
     // Tải hoặc khởi tạo dữ liệu bổ sung
-    await loadImports();
     await loadProfitMargins();
     await loadInventoryTransactions();
     
   } catch (error) {
     console.error('Lỗi khi tải dữ liệu:', error);
     alert('Có lỗi khi tải dữ liệu!');
-  }
-}
-
-// Tải dữ liệu nhập hàng
-async function loadImports() {
-  try {
-    const response = await fetch("../json/imports.json");
-    imports = await response.json();
-  } catch (error) {
-    imports = [];
-    console.log("Không tìm thấy dữ liệu nhập hàng, khởi tạo mảng rỗng");
   }
 }
 
@@ -275,13 +259,6 @@ function setupEventListeners() {
     ?.addEventListener("change", filterProducts);
 
   document
-    .getElementById("search-imports")
-    ?.addEventListener("input", filterImports);
-  document
-    .getElementById("filter-import-status")
-    ?.addEventListener("change", filterImports);
-
-  document
     .getElementById("search-pricing")
     ?.addEventListener("input", filterPricing);
   document
@@ -295,7 +272,6 @@ function setupEventListeners() {
   document
     .getElementById("productForm")
     ?.addEventListener("submit", saveProduct);
-  document.getElementById("importForm")?.addEventListener("submit", saveImport);
 }
 
 // Điều hướng
@@ -318,7 +294,6 @@ function navigateToSection(section) {
     users: "Quản lý người dùng",
     categories: "Quản lý loại sản phẩm",
     products: "Quản lý sản phẩm",
-    imports: "Quản lý nhập hàng",
     pricing: "Quản lý giá bán",
     orders: "Quản lý đơn hàng",
     inventory: "Quản lý tồn kho",
@@ -338,9 +313,6 @@ function navigateToSection(section) {
       break;
     case "products":
       loadProducts();
-      break;
-    case "imports":
-      loadImportsTable();
       break;
     case "pricing":
       loadPricing();
@@ -930,298 +902,6 @@ function deleteProduct(bookId) {
   }
 }
 
-// Quản lý Nhập hàng
-function loadImportsTable() {
-  filterImports();
-}
-
-function filterImports() {
-  const searchTerm =
-    document.getElementById("search-imports")?.value.toLowerCase() || "";
-  const statusFilter =
-    document.getElementById("filter-import-status")?.value || "";
-
-  let filteredImports = [...imports];
-
-  if (searchTerm) {
-    filteredImports = filteredImports.filter(
-      (imp) =>
-        imp.id.toString().includes(searchTerm) ||
-        imp.note?.toLowerCase().includes(searchTerm)
-    );
-  }
-
-  if (statusFilter) {
-    filteredImports = filteredImports.filter(
-      (imp) => imp.status === statusFilter
-    );
-  }
-
-  const tbody = document.querySelector("#imports-table tbody");
-  tbody.innerHTML = filteredImports
-    .map((imp) => {
-      const total =
-        imp.items?.reduce(
-          (sum, item) => sum + item.quantity * item.import_price,
-          0
-        ) || 0;
-      return `
-            <tr>
-                <td>#${imp.id}</td>
-                <td>${formatDate(imp.import_date)}</td>
-                <td>${formatCurrency(total)}</td>
-                <td>${
-                  imp.status === "completed"
-                    ? '<span class="badge badge-success">Đã hoàn thành</span>'
-                    : '<span class="badge badge-warning">Nháp</span>'
-                }</td>
-                <td>
-                    ${
-                      imp.status === "draft"
-                        ? `<button class="btn btn-sm btn-primary" onclick="editImport(${imp.id})">Sửa</button>
-                         <button class="btn btn-sm btn-success" onclick="completeImportById(${imp.id})">Hoàn thành</button>`
-                        : '<span class="badge badge-info">Đã hoàn thành</span>'
-                    }
-                </td>
-            </tr>
-        `;
-    })
-    .join("");
-}
-
-function showAddImportModal() {
-  document.getElementById("importModalTitle").textContent =
-    "Tạo phiếu nhập hàng";
-  document.getElementById("importForm").reset();
-  document.getElementById("import-id").value = "";
-  document.getElementById("import-date").value = new Date()
-    .toISOString()
-    .split("T")[0];
-  document.getElementById("import-items-container").innerHTML = "";
-  addImportItem();
-  openModal("importModal");
-}
-
-function editImport(importId) {
-  const importRecord = imports.find((i) => i.id === importId);
-  if (importRecord && importRecord.status === "draft") {
-    document.getElementById("importModalTitle").textContent =
-      "Sửa phiếu nhập hàng";
-    document.getElementById("import-id").value = importRecord.id;
-    document.getElementById("import-date").value = importRecord.import_date;
-    document.getElementById("import-note").value = importRecord.note || "";
-
-    document.getElementById("import-items-container").innerHTML = "";
-    importRecord.items.forEach((item) => {
-      addImportItem(item);
-    });
-
-    calculateImportTotal();
-    openModal("importModal");
-  }
-}
-
-function addImportItem(itemData = null) {
-  const container = document.getElementById("import-items-container");
-  const itemId = Date.now() + Math.random();
-
-  const itemDiv = document.createElement("div");
-  itemDiv.className = "import-item";
-  itemDiv.innerHTML = `
-        <div class="import-item-header">
-            <h4>Sản phẩm</h4>
-            <button type="button" class="btn btn-sm btn-danger" onclick="removeImportItem(this)">Xóa</button>
-        </div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Sản phẩm</label>
-                <select class="import-product" required onchange="calculateImportTotal()">
-                    <option value="">Chọn sản phẩm</option>
-                    ${books
-                      .map(
-                        (b) =>
-                          `<option value="${b.id}" ${
-                            itemData && itemData.product_id === b.id
-                              ? "selected"
-                              : ""
-                          }>${b.title}</option>`
-                      )
-                      .join("")}
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Số lượng</label>
-                <input type="number" class="import-quantity" value="${
-                  itemData?.quantity || 1
-                }" min="1" required onchange="calculateImportTotal()">
-            </div>
-            <div class="form-group">
-                <label>Giá nhập (VNĐ)</label>
-                <input type="number" class="import-price" value="${
-                  itemData?.import_price || 0
-                }" min="0" required onchange="calculateImportTotal()">
-            </div>
-        </div>
-    `;
-
-  container.appendChild(itemDiv);
-  calculateImportTotal();
-}
-
-function removeImportItem(btn) {
-  btn.closest(".import-item").remove();
-  calculateImportTotal();
-}
-
-function calculateImportTotal() {
-  const items = document.querySelectorAll(".import-item");
-  let total = 0;
-
-  items.forEach((item) => {
-    const quantity =
-      parseInt(item.querySelector(".import-quantity").value) || 0;
-    const price = parseInt(item.querySelector(".import-price").value) || 0;
-    total += quantity * price;
-  });
-
-  document.getElementById("import-total").textContent = formatCurrency(total);
-}
-
-function saveImport(e) {
-  e.preventDefault();
-
-  const id = document.getElementById("import-id").value;
-  const items = [];
-
-  document.querySelectorAll(".import-item").forEach((item) => {
-    const productId = parseInt(item.querySelector(".import-product").value);
-    const quantity = parseInt(item.querySelector(".import-quantity").value);
-    const price = parseInt(item.querySelector(".import-price").value);
-
-    if (productId && quantity && price) {
-      items.push({
-        product_id: productId,
-        quantity: quantity,
-        import_price: price,
-      });
-    }
-  });
-
-  if (items.length === 0) {
-    alert("Vui lòng thêm ít nhất một sản phẩm!");
-    return;
-  }
-
-  const importData = {
-    import_date: document.getElementById("import-date").value,
-    note: document.getElementById("import-note").value,
-    items: items,
-    status: "draft",
-    created_by: currentAdmin.id,
-    created_at: new Date().toISOString(),
-  };
-
-  if (id) {
-    // Cập nhật
-    const importRecord = imports.find((i) => i.id === parseInt(id));
-    if (importRecord) {
-      Object.assign(importRecord, importData);
-    }
-  } else {
-    // Thêm mới
-    const newId =
-      imports.length > 0 ? Math.max(...imports.map((i) => i.id)) + 1 : 1;
-    imports.push({
-      id: newId,
-      ...importData,
-    });
-  }
-
-  saveData("imports", imports);
-  closeModal("importModal");
-  loadImportsTable();
-  alert("Đã lưu phiếu nhập thành công!");
-}
-
-function completeImport() {
-  const id = document.getElementById("import-id").value;
-
-  if (!id) {
-    // Lưu trước
-    saveImport(event);
-    return;
-  }
-
-  const importRecord = imports.find((i) => i.id === parseInt(id));
-  if (importRecord && importRecord.status === "draft") {
-    // Cập nhật tồn kho
-    importRecord.items.forEach((item) => {
-      const book = books.find((b) => b.id === item.product_id);
-      if (book) {
-        book.stock += item.quantity;
-
-        // Ghi lại giao dịch
-        inventoryTransactions.push({
-          id: inventoryTransactions.length + 1,
-          product_id: item.product_id,
-          type: "import",
-          quantity: item.quantity,
-          reference_id: importRecord.id,
-          reference_type: "import",
-          created_at: new Date().toISOString(),
-        });
-      }
-    });
-
-    importRecord.status = "completed";
-    importRecord.completed_at = new Date().toISOString();
-
-    saveData("imports", imports);
-    saveData("books", books);
-    saveData("inventory_transactions", inventoryTransactions);
-
-    closeModal("importModal");
-    loadImportsTable();
-    alert("Đã hoàn thành phiếu nhập và cập nhật tồn kho!");
-  }
-}
-
-function completeImportById(importId) {
-  if (confirm("Bạn có chắc muốn hoàn thành phiếu nhập này?")) {
-    const importRecord = imports.find((i) => i.id === importId);
-    if (importRecord && importRecord.status === "draft") {
-      // Cập nhật tồn kho
-      importRecord.items.forEach((item) => {
-        const book = books.find((b) => b.id === item.product_id);
-        if (book) {
-          book.stock += item.quantity;
-
-          // Ghi lại giao dịch
-          inventoryTransactions.push({
-            id: inventoryTransactions.length + 1,
-            product_id: item.product_id,
-            type: "import",
-            quantity: item.quantity,
-            reference_id: importRecord.id,
-            reference_type: "import",
-            created_at: new Date().toISOString(),
-          });
-        }
-      });
-
-      importRecord.status = "completed";
-      importRecord.completed_at = new Date().toISOString();
-
-      saveData("imports", imports);
-      saveData("books", books);
-      saveData("inventory_transactions", inventoryTransactions);
-
-      loadImportsTable();
-      alert("Đã hoàn thành phiếu nhập và cập nhật tồn kho!");
-    }
-  }
-}
-
 // Quản lý Giá bán
 function loadPricing() {
   // Tải tỷ lệ lợi nhuận theo loại
@@ -1300,23 +980,8 @@ function filterPricing() {
   const tbody = document.querySelector("#pricing-table tbody");
   tbody.innerHTML = filteredBooks
     .map((book) => {
-      // Lấy giá nhập từ phiếu nhập mới nhất
-      const bookImports = imports.filter(
-        (imp) =>
-          imp.status === "completed" &&
-          imp.items.some((item) => item.product_id === book.id)
-      );
-
+      // Giá nhập mặc định = 0 (không còn quản lý nhập hàng)
       let costPrice = 0;
-      if (bookImports.length > 0) {
-        const latestImport = bookImports.sort(
-          (a, b) => new Date(b.import_date) - new Date(a.import_date)
-        )[0];
-        const importItem = latestImport.items.find(
-          (item) => item.product_id === book.id
-        );
-        costPrice = importItem?.import_price || 0;
-      }
 
       // Lấy tỷ lệ lợi nhuận
       const categoryId = book.category_ids?.[0];

@@ -95,12 +95,12 @@ async function handleLogin(e) {
 async function loadAllData() {
     try {
         // Kiểm tra localStorage trước, nếu có thì ưu tiên dùng localStorage
-        const localBooks = localStorage.getItem('admin_books');
-        const localCategories = localStorage.getItem('admin_categories');
-        const localUsers = localStorage.getItem('admin_users');
-        const localOrders = localStorage.getItem('admin_orders');
-        const localOrderDetails = localStorage.getItem('admin_order_details');
-        const localAddresses = localStorage.getItem('admin_addresses');
+        const localBooks = localStorage.getItem('admin_books') || localStorage.getItem('BOOKS');
+        const localCategories = localStorage.getItem('admin_categories') || localStorage.getItem('CATEGORIES');
+        const localUsers = localStorage.getItem('admin_users') || localStorage.getItem('USERS');
+        const localOrders = localStorage.getItem('admin_orders') || localStorage.getItem('orders');
+        const localOrderDetails = localStorage.getItem('admin_order_details') || localStorage.getItem('order_details');
+        const localAddresses = localStorage.getItem('admin_addresses') || localStorage.getItem('ALL_ADDRESSES');
         
         if (localBooks && localCategories && localUsers) {
             // Nếu đã có dữ liệu trong localStorage, dùng nó
@@ -110,7 +110,16 @@ async function loadAllData() {
             orders = localOrders ? JSON.parse(localOrders) : [];
             orderDetails = localOrderDetails ? JSON.parse(localOrderDetails) : [];
             addresses = localAddresses ? JSON.parse(localAddresses) : [];
-            console.log('✅ Đã tải dữ liệu từ localStorage');
+            
+            // Đồng bộ sang cả 2 key (admin_ và user key)
+            saveData('books', books);
+            saveData('categories', categories);
+            saveData('users', users);
+            saveData('orders', orders);
+            saveData('order_details', orderDetails);
+            saveData('addresses', addresses);
+            
+            console.log('✅ Đã tải dữ liệu từ localStorage và đồng bộ');
         } else {
             // Nếu chưa có, load từ JSON file và lưu vào localStorage
             const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
@@ -129,7 +138,7 @@ async function loadAllData() {
             orderDetails = await orderDetailsRes.json();
             addresses = await addressesRes.json();
             
-            // Lưu vào localStorage lần đầu
+            // Lưu vào localStorage lần đầu (sẽ tự động đồng bộ sang user)
             saveData('books', books);
             saveData('categories', categories);
             saveData('users', users);
@@ -1491,6 +1500,22 @@ function saveData(type, data) {
     // Hiện tại chỉ log nó ra
     console.log(`Đang lưu ${type}:`, data);
     
-    // Có thể sử dụng localStorage để lưu trữ trong demo này:
+    // Lưu vào localStorage với key cho admin
     localStorage.setItem(`admin_${type}`, JSON.stringify(data));
+    
+    // Đồng bộ dữ liệu sang trang user
+    // Map key admin sang key user
+    const userKeyMap = {
+        'books': 'BOOKS',
+        'categories': 'CATEGORIES',
+        'users': 'USERS',
+        'orders': 'orders',
+        'order_details': 'order_details',
+        'addresses': 'ALL_ADDRESSES'
+    };
+    
+    if (userKeyMap[type]) {
+        localStorage.setItem(userKeyMap[type], JSON.stringify(data));
+        console.log(`✅ Đã đồng bộ ${type} sang trang user với key ${userKeyMap[type]}`);
+    }
 }

@@ -742,6 +742,7 @@ function editProduct(bookId) {
     document.getElementById("product-publisher").value = book.publisher || "";
     document.getElementById("product-year").value = book.publish_year || "";
     document.getElementById("product-pages").value = book.pages || "";
+    document.getElementById("product-size").value = book.size || "";
     document.getElementById("product-authors").value =
       book.authors?.join(", ") || "";
     document.getElementById("product-image").value = book.image_url || "";
@@ -866,6 +867,8 @@ function saveProduct(e) {
     category_ids: selectedCategories,
     image_url:
       document.getElementById("product-image").value || DEFAULT_PRODUCT_IMAGE,
+    images: [], // Mảng ảnh phụ, mặc định rỗng
+    size: document.getElementById("product-size")?.value || "14 x 20.5 cm", // Kích thước mặc định
     description: document.getElementById("product-description").value,
     status: document.getElementById("product-status").checked,
     updated_at: new Date().toISOString(),

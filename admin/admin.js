@@ -140,16 +140,15 @@ async function handleLogin(e) {
 
 // Tải tất cả dữ liệu từ các file JSON
 async function loadAllData() {
-<<<<<<< HEAD
   try {
     // Kiểm tra localStorage trước, nếu có thì ưu tiên dùng localStorage
-    const localBooks = localStorage.getItem("BOOKS");
-    const localCategories = localStorage.getItem("CATEGORIES");
-    const localUsers = localStorage.getItem("USERS");
-    const localOrders = localStorage.getItem("orders");
-    const localOrderDetails = localStorage.getItem("order_details");
-    const localAddresses = localStorage.getItem("ALL_ADDRESSES");
-
+    const localBooks = localStorage.getItem('admin_books') || localStorage.getItem('BOOKS');
+    const localCategories = localStorage.getItem('admin_categories') || localStorage.getItem('CATEGORIES');
+    const localUsers = localStorage.getItem('admin_users') || localStorage.getItem('USERS');
+    const localOrders = localStorage.getItem('admin_orders') || localStorage.getItem('orders');
+    const localOrderDetails = localStorage.getItem('admin_order_details') || localStorage.getItem('order_details');
+    const localAddresses = localStorage.getItem('admin_addresses') || localStorage.getItem('ALL_ADDRESSES');
+    
     if (localBooks && localCategories && localUsers) {
       // Nếu đã có dữ liệu trong localStorage, dùng nó
       books = JSON.parse(localBooks);
@@ -158,114 +157,52 @@ async function loadAllData() {
       orders = localOrders ? JSON.parse(localOrders) : [];
       orderDetails = localOrderDetails ? JSON.parse(localOrderDetails) : [];
       addresses = localAddresses ? JSON.parse(localAddresses) : [];
-      console.log("✅ Đã tải dữ liệu từ localStorage");
+      
+      // Đồng bộ sang cả 2 key (admin_ và user key)
+      saveData('books', books);
+      saveData('categories', categories);
+      saveData('users', users);
+      saveData('orders', orders);
+      saveData('order_details', orderDetails);
+      saveData('addresses', addresses);
+      
+      console.log('✅ Đã tải dữ liệu từ localStorage và đồng bộ');
     } else {
       // Nếu chưa có, load từ JSON file và lưu vào localStorage
-      const [
-        usersRes,
-        booksRes,
-        categoriesRes,
-        ordersRes,
-        orderDetailsRes,
-        addressesRes,
-      ] = await Promise.all([
-        fetch("../json/users.json"),
-        fetch("../json/books.json"),
-        fetch("../json/categories.json"),
-        fetch("../json/orders.json"),
-        fetch("../json/order_details.json"),
-        fetch("../json/addresses.json"),
+      const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
+        fetch('../json/users.json'),
+        fetch('../json/books.json'),
+        fetch('../json/categories.json'),
+        fetch('../json/orders.json'),
+        fetch('../json/order_details.json'),
+        fetch('../json/addresses.json')
       ]);
-
+      
       users = await usersRes.json();
       books = await booksRes.json();
       categories = await categoriesRes.json();
       orders = await ordersRes.json();
       orderDetails = await orderDetailsRes.json();
       addresses = await addressesRes.json();
-
-      // Lưu vào localStorage lần đầu
-      saveData("books", books);
-      saveData("categories", categories);
-      saveData("users", users);
-      saveData("orders", orders);
-      saveData("order_details", orderDetails);
-      saveData("addresses", addresses);
-      console.log("✅ Đã tải từ JSON files và lưu vào localStorage");
-=======
-    try {
-        // Kiểm tra localStorage trước, nếu có thì ưu tiên dùng localStorage
-        const localBooks = localStorage.getItem('admin_books') || localStorage.getItem('BOOKS');
-        const localCategories = localStorage.getItem('admin_categories') || localStorage.getItem('CATEGORIES');
-        const localUsers = localStorage.getItem('admin_users') || localStorage.getItem('USERS');
-        const localOrders = localStorage.getItem('admin_orders') || localStorage.getItem('orders');
-        const localOrderDetails = localStorage.getItem('admin_order_details') || localStorage.getItem('order_details');
-        const localAddresses = localStorage.getItem('admin_addresses') || localStorage.getItem('ALL_ADDRESSES');
-        
-        if (localBooks && localCategories && localUsers) {
-            // Nếu đã có dữ liệu trong localStorage, dùng nó
-            books = JSON.parse(localBooks);
-            categories = JSON.parse(localCategories);
-            users = JSON.parse(localUsers);
-            orders = localOrders ? JSON.parse(localOrders) : [];
-            orderDetails = localOrderDetails ? JSON.parse(localOrderDetails) : [];
-            addresses = localAddresses ? JSON.parse(localAddresses) : [];
-            
-            // Đồng bộ sang cả 2 key (admin_ và user key)
-            saveData('books', books);
-            saveData('categories', categories);
-            saveData('users', users);
-            saveData('orders', orders);
-            saveData('order_details', orderDetails);
-            saveData('addresses', addresses);
-            
-            console.log('✅ Đã tải dữ liệu từ localStorage và đồng bộ');
-        } else {
-            // Nếu chưa có, load từ JSON file và lưu vào localStorage
-            const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
-                fetch('../json/users.json'),
-                fetch('../json/books.json'),
-                fetch('../json/categories.json'),
-                fetch('../json/orders.json'),
-                fetch('../json/order_details.json'),
-                fetch('../json/addresses.json')
-            ]);
-            
-            users = await usersRes.json();
-            books = await booksRes.json();
-            categories = await categoriesRes.json();
-            orders = await ordersRes.json();
-            orderDetails = await orderDetailsRes.json();
-            addresses = await addressesRes.json();
-            
-            // Lưu vào localStorage lần đầu (sẽ tự động đồng bộ sang user)
-            saveData('books', books);
-            saveData('categories', categories);
-            saveData('users', users);
-            saveData('orders', orders);
-            saveData('order_details', orderDetails);
-            saveData('addresses', addresses);
-            console.log('✅ Đã tải từ JSON files và lưu vào localStorage');
-        }
-        
-        // Tải hoặc khởi tạo dữ liệu bổ sung
-        await loadImports();
-        await loadProfitMargins();
-        await loadInventoryTransactions();
-        
-    } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
-        alert('Có lỗi khi tải dữ liệu!');
->>>>>>> 5042a2c42d8bb4639043958c04f11d1e4784b77b
+      
+      // Lưu vào localStorage lần đầu (sẽ tự động đồng bộ sang user)
+      saveData('books', books);
+      saveData('categories', categories);
+      saveData('users', users);
+      saveData('orders', orders);
+      saveData('order_details', orderDetails);
+      saveData('addresses', addresses);
+      console.log('✅ Đã tải từ JSON files và lưu vào localStorage');
     }
-
+    
     // Tải hoặc khởi tạo dữ liệu bổ sung
     await loadImports();
     await loadProfitMargins();
     await loadInventoryTransactions();
+    
   } catch (error) {
-    console.error("Lỗi khi tải dữ liệu:", error);
-    alert("Có lỗi khi tải dữ liệu!");
+    console.error('Lỗi khi tải dữ liệu:', error);
+    alert('Có lỗi khi tải dữ liệu!');
   }
 }
 
@@ -710,14 +647,13 @@ function filterProducts() {
         .filter((n) => n)
         .join(", ");
 
+      const imgUrl = book.image_url ? `../${book.image_url}` : DEFAULT_PRODUCT_IMAGE;
       return `
             <tr>
                 <td>${book.id}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <img src="${
-                          book.image_url || DEFAULT_PRODUCT_IMAGE
-                        }" alt="${book.title}" 
+                        <img src="${imgUrl}" alt="${book.title}" 
                              onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'"
                              style="width: 50px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <span style="font-weight: 500;">${book.title}</span>
@@ -814,7 +750,7 @@ function editProduct(bookId) {
     document.getElementById("product-status").checked = book.status;
 
     // Hiển thị xem trước ảnh
-    const imageUrl = book.image_url || DEFAULT_PRODUCT_IMAGE;
+    const imageUrl = book.image_url ? `../${book.image_url}` : DEFAULT_PRODUCT_IMAGE;
     document.getElementById(
       "product-image-preview"
     ).innerHTML = `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'" style="width: 100%; height: 100%; object-fit: cover;">`;
@@ -854,7 +790,9 @@ function previewProductImage() {
   const preview = document.getElementById("product-image-preview");
 
   if (imageUrl) {
-    preview.innerHTML = `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'; this.parentElement.style.border='2px solid #e74c3c';" style="width: 100%; height: 100%; object-fit: cover;">`;
+    // Nếu là đường dẫn local (img/...), thêm ../ để load từ thư mục admin
+    const finalUrl = imageUrl.startsWith('img/') ? `../${imageUrl}` : imageUrl;
+    preview.innerHTML = `<img src="${finalUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'; this.parentElement.style.border='2px solid #e74c3c';" style="width: 100%; height: 100%; object-fit: cover;">`;
   } else {
     preview.innerHTML = `<img src="${DEFAULT_PRODUCT_IMAGE}" style="width: 100%; height: 100%; object-fit: cover;">`;
   }
@@ -1838,32 +1776,26 @@ function logout() {
 
 // Lưu dữ liệu (mô phỏng - trong ứng dụng thực sẽ sử dụng API)
 function saveData(type, data) {
-<<<<<<< HEAD
-  const key = normalizeKey(type);
-  console.log(`Đang lưu ${key}:`, data);
-  localStorage.setItem(key, JSON.stringify(data));
-=======
-    // Trong ứng dụng thực, sẽ gọi API để lưu dữ liệu
-    // Hiện tại chỉ log nó ra
-    console.log(`Đang lưu ${type}:`, data);
-    
-    // Lưu vào localStorage với key cho admin
-    localStorage.setItem(`admin_${type}`, JSON.stringify(data));
-    
-    // Đồng bộ dữ liệu sang trang user
-    // Map key admin sang key user
-    const userKeyMap = {
-        'books': 'BOOKS',
-        'categories': 'CATEGORIES',
-        'users': 'USERS',
-        'orders': 'orders',
-        'order_details': 'order_details',
-        'addresses': 'ALL_ADDRESSES'
-    };
-    
-    if (userKeyMap[type]) {
-        localStorage.setItem(userKeyMap[type], JSON.stringify(data));
-        console.log(`✅ Đã đồng bộ ${type} sang trang user với key ${userKeyMap[type]}`);
-    }
->>>>>>> 5042a2c42d8bb4639043958c04f11d1e4784b77b
+  // Trong ứng dụng thực, sẽ gọi API để lưu dữ liệu
+  // Hiện tại chỉ log nó ra
+  console.log(`Đang lưu ${type}:`, data);
+  
+  // Lưu vào localStorage với key cho admin
+  localStorage.setItem(`admin_${type}`, JSON.stringify(data));
+  
+  // Đồng bộ dữ liệu sang trang user
+  // Map key admin sang key user
+  const userKeyMap = {
+    'books': 'BOOKS',
+    'categories': 'CATEGORIES',
+    'users': 'USERS',
+    'orders': 'orders',
+    'order_details': 'order_details',
+    'addresses': 'ALL_ADDRESSES'
+  };
+  
+  if (userKeyMap[type]) {
+    localStorage.setItem(userKeyMap[type], JSON.stringify(data));
+    console.log(`✅ Đã đồng bộ ${type} sang trang user với key ${userKeyMap[type]}`);
+  }
 }

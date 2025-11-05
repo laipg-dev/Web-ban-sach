@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   ORDERS: "orders",
   ORDER_DETAILS: "order_details",
   ADDRESSES: "ALL_ADDRESSES",
+  IMPORTS: "imports",
   INVENTORY_TRANSACTIONS: "inventory_transactions",
   PROFIT_MARGINS: "profit_margins",
 };
@@ -28,6 +29,8 @@ function normalizeKey(key) {
     ALL_ADDRESSES: STORAGE_KEYS.ADDRESSES,
     addresses: STORAGE_KEYS.ADDRESSES,
     admin_addresses: STORAGE_KEYS.ADDRESSES,
+    imports: STORAGE_KEYS.IMPORTS,
+    admin_imports: STORAGE_KEYS.IMPORTS,
     inventory_transactions: STORAGE_KEYS.INVENTORY_TRANSACTIONS,
     admin_inventory_transactions: STORAGE_KEYS.INVENTORY_TRANSACTIONS,
     profit_margins: STORAGE_KEYS.PROFIT_MARGINS,
@@ -47,6 +50,7 @@ let categories = [];
 let orders = [];
 let orderDetails = [];
 let addresses = [];
+let imports = [];
 let profitMargins = [];
 let inventoryTransactions = [];
 
@@ -138,13 +142,13 @@ async function handleLogin(e) {
 async function loadAllData() {
   try {
     // Kiểm tra localStorage trước, nếu có thì ưu tiên dùng localStorage
-    const localBooks = localStorage.getItem('admin_books') || localStorage.getItem('BOOKS');
-    const localCategories = localStorage.getItem('admin_categories') || localStorage.getItem('CATEGORIES');
-    const localUsers = localStorage.getItem('admin_users') || localStorage.getItem('USERS');
-    const localOrders = localStorage.getItem('admin_orders') || localStorage.getItem('orders');
-    const localOrderDetails = localStorage.getItem('admin_order_details') || localStorage.getItem('order_details');
-    const localAddresses = localStorage.getItem('admin_addresses') || localStorage.getItem('ALL_ADDRESSES');
-    
+    const localBooks = localStorage.getItem("BOOKS");
+    const localCategories = localStorage.getItem("CATEGORIES");
+    const localUsers = localStorage.getItem("USERS");
+    const localOrders = localStorage.getItem("orders");
+    const localOrderDetails = localStorage.getItem("order_details");
+    const localAddresses = localStorage.getItem("ALL_ADDRESSES");
+
     if (localBooks && localCategories && localUsers) {
       // Nếu đã có dữ liệu trong localStorage, dùng nó
       books = JSON.parse(localBooks);
@@ -153,51 +157,59 @@ async function loadAllData() {
       orders = localOrders ? JSON.parse(localOrders) : [];
       orderDetails = localOrderDetails ? JSON.parse(localOrderDetails) : [];
       addresses = localAddresses ? JSON.parse(localAddresses) : [];
-      
-      // Đồng bộ sang cả 2 key (admin_ và user key)
-      saveData('books', books);
-      saveData('categories', categories);
-      saveData('users', users);
-      saveData('orders', orders);
-      saveData('order_details', orderDetails);
-      saveData('addresses', addresses);
-      
-      console.log('✅ Đã tải dữ liệu từ localStorage và đồng bộ');
+      console.log("✅ Đã tải dữ liệu từ localStorage");
     } else {
       // Nếu chưa có, load từ JSON file và lưu vào localStorage
-      const [usersRes, booksRes, categoriesRes, ordersRes, orderDetailsRes, addressesRes] = await Promise.all([
-        fetch('../json/users.json'),
-        fetch('../json/books.json'),
-        fetch('../json/categories.json'),
-        fetch('../json/orders.json'),
-        fetch('../json/order_details.json'),
-        fetch('../json/addresses.json')
+      const [
+        usersRes,
+        booksRes,
+        categoriesRes,
+        ordersRes,
+        orderDetailsRes,
+        addressesRes,
+      ] = await Promise.all([
+        fetch("../json/users.json"),
+        fetch("../json/books.json"),
+        fetch("../json/categories.json"),
+        fetch("../json/orders.json"),
+        fetch("../json/order_details.json"),
+        fetch("../json/addresses.json"),
       ]);
-      
+
       users = await usersRes.json();
       books = await booksRes.json();
       categories = await categoriesRes.json();
       orders = await ordersRes.json();
       orderDetails = await orderDetailsRes.json();
       addresses = await addressesRes.json();
-      
-      // Lưu vào localStorage lần đầu (sẽ tự động đồng bộ sang user)
-      saveData('books', books);
-      saveData('categories', categories);
-      saveData('users', users);
-      saveData('orders', orders);
-      saveData('order_details', orderDetails);
-      saveData('addresses', addresses);
-      console.log('✅ Đã tải từ JSON files và lưu vào localStorage');
+
+      // Lưu vào localStorage lần đầu
+      saveData("books", books);
+      saveData("categories", categories);
+      saveData("users", users);
+      saveData("orders", orders);
+      saveData("order_details", orderDetails);
+      saveData("addresses", addresses);
+      console.log("✅ Đã tải từ JSON files và lưu vào localStorage");
     }
-    
+
     // Tải hoặc khởi tạo dữ liệu bổ sung
+    await loadImports();
     await loadProfitMargins();
     await loadInventoryTransactions();
-    
   } catch (error) {
-    console.error('Lỗi khi tải dữ liệu:', error);
-    alert('Có lỗi khi tải dữ liệu!');
+    console.error("Lỗi khi tải dữ liệu:", error);
+    alert("Có lỗi khi tải dữ liệu!");
+  }
+}
+// Tải dữ liệu nhập hàng
+async function loadImports() {
+  try {
+    const response = await fetch("../json/imports.json");
+    imports = await response.json();
+  } catch (error) {
+    imports = [];
+    console.log("Không tìm thấy dữ liệu nhập hàng, khởi tạo mảng rỗng");
   }
 }
 
@@ -259,6 +271,13 @@ function setupEventListeners() {
     ?.addEventListener("change", filterProducts);
 
   document
+    .getElementById("search-imports")
+    ?.addEventListener("input", filterImports);
+  document
+    .getElementById("filter-import-status")
+    ?.addEventListener("change", filterImports);
+
+  document
     .getElementById("search-pricing")
     ?.addEventListener("input", filterPricing);
   document
@@ -272,6 +291,7 @@ function setupEventListeners() {
   document
     .getElementById("productForm")
     ?.addEventListener("submit", saveProduct);
+  document.getElementById("importForm")?.addEventListener("submit", saveImport);
 }
 
 // Điều hướng
@@ -294,6 +314,7 @@ function navigateToSection(section) {
     users: "Quản lý người dùng",
     categories: "Quản lý loại sản phẩm",
     products: "Quản lý sản phẩm",
+    imports: "Quản lý nhập hàng",
     pricing: "Quản lý giá bán",
     orders: "Quản lý đơn hàng",
     inventory: "Quản lý tồn kho",
@@ -313,6 +334,9 @@ function navigateToSection(section) {
       break;
     case "products":
       loadProducts();
+      break;
+    case "imports":
+      loadImportsTable();
       break;
     case "pricing":
       loadPricing();
@@ -619,13 +643,14 @@ function filterProducts() {
         .filter((n) => n)
         .join(", ");
 
-      const imgUrl = book.image_url ? `../${book.image_url}` : DEFAULT_PRODUCT_IMAGE;
       return `
             <tr>
                 <td>${book.id}</td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <img src="${imgUrl}" alt="${book.title}" 
+                        <img src="${
+                          book.image_url || DEFAULT_PRODUCT_IMAGE
+                        }" alt="${book.title}" 
                              onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'"
                              style="width: 50px; height: 70px; border-radius: 8px; object-fit: cover; border: 2px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                         <span style="font-weight: 500;">${book.title}</span>
@@ -714,7 +739,6 @@ function editProduct(bookId) {
     document.getElementById("product-publisher").value = book.publisher || "";
     document.getElementById("product-year").value = book.publish_year || "";
     document.getElementById("product-pages").value = book.pages || "";
-    document.getElementById("product-size").value = book.size || "";
     document.getElementById("product-authors").value =
       book.authors?.join(", ") || "";
     document.getElementById("product-image").value = book.image_url || "";
@@ -723,7 +747,7 @@ function editProduct(bookId) {
     document.getElementById("product-status").checked = book.status;
 
     // Hiển thị xem trước ảnh
-    const imageUrl = book.image_url ? `../${book.image_url}` : DEFAULT_PRODUCT_IMAGE;
+    const imageUrl = book.image_url || DEFAULT_PRODUCT_IMAGE;
     document.getElementById(
       "product-image-preview"
     ).innerHTML = `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'" style="width: 100%; height: 100%; object-fit: cover;">`;
@@ -763,9 +787,7 @@ function previewProductImage() {
   const preview = document.getElementById("product-image-preview");
 
   if (imageUrl) {
-    // Nếu là đường dẫn local (img/...), thêm ../ để load từ thư mục admin
-    const finalUrl = imageUrl.startsWith('img/') ? `../${imageUrl}` : imageUrl;
-    preview.innerHTML = `<img src="${finalUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'; this.parentElement.style.border='2px solid #e74c3c';" style="width: 100%; height: 100%; object-fit: cover;">`;
+    preview.innerHTML = `<img src="${imageUrl}" onerror="this.src='${DEFAULT_PRODUCT_IMAGE}'; this.parentElement.style.border='2px solid #e74c3c';" style="width: 100%; height: 100%; object-fit: cover;">`;
   } else {
     preview.innerHTML = `<img src="${DEFAULT_PRODUCT_IMAGE}" style="width: 100%; height: 100%; object-fit: cover;">`;
   }
@@ -839,8 +861,6 @@ function saveProduct(e) {
     category_ids: selectedCategories,
     image_url:
       document.getElementById("product-image").value || DEFAULT_PRODUCT_IMAGE,
-    images: [], // Mảng ảnh phụ, mặc định rỗng
-    size: document.getElementById("product-size")?.value || "14 x 20.5 cm", // Kích thước mặc định
     description: document.getElementById("product-description").value,
     status: document.getElementById("product-status").checked,
     updated_at: new Date().toISOString(),
@@ -899,6 +919,298 @@ function deleteProduct(bookId) {
     saveData("books", books);
     loadProducts();
     alert("✅ Đã xóa sản phẩm thành công!");
+  }
+}
+
+// Quản lý Nhập hàng
+function loadImportsTable() {
+  filterImports();
+}
+
+function filterImports() {
+  const searchTerm =
+    document.getElementById("search-imports")?.value.toLowerCase() || "";
+  const statusFilter =
+    document.getElementById("filter-import-status")?.value || "";
+
+  let filteredImports = [...imports];
+
+  if (searchTerm) {
+    filteredImports = filteredImports.filter(
+      (imp) =>
+        imp.id.toString().includes(searchTerm) ||
+        imp.note?.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  if (statusFilter) {
+    filteredImports = filteredImports.filter(
+      (imp) => imp.status === statusFilter
+    );
+  }
+
+  const tbody = document.querySelector("#imports-table tbody");
+  tbody.innerHTML = filteredImports
+    .map((imp) => {
+      const total =
+        imp.items?.reduce(
+          (sum, item) => sum + item.quantity * item.import_price,
+          0
+        ) || 0;
+      return `
+            <tr>
+                <td>#${imp.id}</td>
+                <td>${formatDate(imp.import_date)}</td>
+                <td>${formatCurrency(total)}</td>
+                <td>${
+                  imp.status === "completed"
+                    ? '<span class="badge badge-success">Đã hoàn thành</span>'
+                    : '<span class="badge badge-warning">Nháp</span>'
+                }</td>
+                <td>
+                    ${
+                      imp.status === "draft"
+                        ? `<button class="btn btn-sm btn-primary" onclick="editImport(${imp.id})">Sửa</button>
+                         <button class="btn btn-sm btn-success" onclick="completeImportById(${imp.id})">Hoàn thành</button>`
+                        : '<span class="badge badge-info">Đã hoàn thành</span>'
+                    }
+                </td>
+            </tr>
+        `;
+    })
+    .join("");
+}
+
+function showAddImportModal() {
+  document.getElementById("importModalTitle").textContent =
+    "Tạo phiếu nhập hàng";
+  document.getElementById("importForm").reset();
+  document.getElementById("import-id").value = "";
+  document.getElementById("import-date").value = new Date()
+    .toISOString()
+    .split("T")[0];
+  document.getElementById("import-items-container").innerHTML = "";
+  addImportItem();
+  openModal("importModal");
+}
+
+function editImport(importId) {
+  const importRecord = imports.find((i) => i.id === importId);
+  if (importRecord && importRecord.status === "draft") {
+    document.getElementById("importModalTitle").textContent =
+      "Sửa phiếu nhập hàng";
+    document.getElementById("import-id").value = importRecord.id;
+    document.getElementById("import-date").value = importRecord.import_date;
+    document.getElementById("import-note").value = importRecord.note || "";
+
+    document.getElementById("import-items-container").innerHTML = "";
+    importRecord.items.forEach((item) => {
+      addImportItem(item);
+    });
+
+    calculateImportTotal();
+    openModal("importModal");
+  }
+}
+
+function addImportItem(itemData = null) {
+  const container = document.getElementById("import-items-container");
+  const itemId = Date.now() + Math.random();
+
+  const itemDiv = document.createElement("div");
+  itemDiv.className = "import-item";
+  itemDiv.innerHTML = `
+        <div class="import-item-header">
+            <h4>Sản phẩm</h4>
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeImportItem(this)">Xóa</button>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Sản phẩm</label>
+                <select class="import-product" required onchange="calculateImportTotal()">
+                    <option value="">Chọn sản phẩm</option>
+                    ${books
+                      .map(
+                        (b) =>
+                          `<option value="${b.id}" ${
+                            itemData && itemData.product_id === b.id
+                              ? "selected"
+                              : ""
+                          }>${b.title}</option>`
+                      )
+                      .join("")}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Số lượng</label>
+                <input type="number" class="import-quantity" value="${
+                  itemData?.quantity || 1
+                }" min="1" required onchange="calculateImportTotal()">
+            </div>
+            <div class="form-group">
+                <label>Giá nhập (VNĐ)</label>
+                <input type="number" class="import-price" value="${
+                  itemData?.import_price || 0
+                }" min="0" required onchange="calculateImportTotal()">
+            </div>
+        </div>
+    `;
+
+  container.appendChild(itemDiv);
+  calculateImportTotal();
+}
+
+function removeImportItem(btn) {
+  btn.closest(".import-item").remove();
+  calculateImportTotal();
+}
+
+function calculateImportTotal() {
+  const items = document.querySelectorAll(".import-item");
+  let total = 0;
+
+  items.forEach((item) => {
+    const quantity =
+      parseInt(item.querySelector(".import-quantity").value) || 0;
+    const price = parseInt(item.querySelector(".import-price").value) || 0;
+    total += quantity * price;
+  });
+
+  document.getElementById("import-total").textContent = formatCurrency(total);
+}
+
+function saveImport(e) {
+  e.preventDefault();
+
+  const id = document.getElementById("import-id").value;
+  const items = [];
+
+  document.querySelectorAll(".import-item").forEach((item) => {
+    const productId = parseInt(item.querySelector(".import-product").value);
+    const quantity = parseInt(item.querySelector(".import-quantity").value);
+    const price = parseInt(item.querySelector(".import-price").value);
+
+    if (productId && quantity && price) {
+      items.push({
+        product_id: productId,
+        quantity: quantity,
+        import_price: price,
+      });
+    }
+  });
+
+  if (items.length === 0) {
+    alert("Vui lòng thêm ít nhất một sản phẩm!");
+    return;
+  }
+
+  const importData = {
+    import_date: document.getElementById("import-date").value,
+    note: document.getElementById("import-note").value,
+    items: items,
+    status: "draft",
+    created_by: currentAdmin.id,
+    created_at: new Date().toISOString(),
+  };
+
+  if (id) {
+    // Cập nhật
+    const importRecord = imports.find((i) => i.id === parseInt(id));
+    if (importRecord) {
+      Object.assign(importRecord, importData);
+    }
+  } else {
+    // Thêm mới
+    const newId =
+      imports.length > 0 ? Math.max(...imports.map((i) => i.id)) + 1 : 1;
+    imports.push({
+      id: newId,
+      ...importData,
+    });
+  }
+
+  saveData("imports", imports);
+  closeModal("importModal");
+  loadImportsTable();
+  alert("Đã lưu phiếu nhập thành công!");
+}
+
+function completeImport() {
+  const id = document.getElementById("import-id").value;
+
+  if (!id) {
+    // Lưu trước
+    saveImport(event);
+    return;
+  }
+
+  const importRecord = imports.find((i) => i.id === parseInt(id));
+  if (importRecord && importRecord.status === "draft") {
+    // Cập nhật tồn kho
+    importRecord.items.forEach((item) => {
+      const book = books.find((b) => b.id === item.product_id);
+      if (book) {
+        book.stock += item.quantity;
+
+        // Ghi lại giao dịch
+        inventoryTransactions.push({
+          id: inventoryTransactions.length + 1,
+          product_id: item.product_id,
+          type: "import",
+          quantity: item.quantity,
+          reference_id: importRecord.id,
+          reference_type: "import",
+          created_at: new Date().toISOString(),
+        });
+      }
+    });
+
+    importRecord.status = "completed";
+    importRecord.completed_at = new Date().toISOString();
+
+    saveData("imports", imports);
+    saveData("books", books);
+    saveData("inventory_transactions", inventoryTransactions);
+
+    closeModal("importModal");
+    loadImportsTable();
+    alert("Đã hoàn thành phiếu nhập và cập nhật tồn kho!");
+  }
+}
+
+function completeImportById(importId) {
+  if (confirm("Bạn có chắc muốn hoàn thành phiếu nhập này?")) {
+    const importRecord = imports.find((i) => i.id === importId);
+    if (importRecord && importRecord.status === "draft") {
+      // Cập nhật tồn kho
+      importRecord.items.forEach((item) => {
+        const book = books.find((b) => b.id === item.product_id);
+        if (book) {
+          book.stock += item.quantity;
+
+          // Ghi lại giao dịch
+          inventoryTransactions.push({
+            id: inventoryTransactions.length + 1,
+            product_id: item.product_id,
+            type: "import",
+            quantity: item.quantity,
+            reference_id: importRecord.id,
+            reference_type: "import",
+            created_at: new Date().toISOString(),
+          });
+        }
+      });
+
+      importRecord.status = "completed";
+      importRecord.completed_at = new Date().toISOString();
+
+      saveData("imports", imports);
+      saveData("books", books);
+      saveData("inventory_transactions", inventoryTransactions);
+
+      loadImportsTable();
+      alert("Đã hoàn thành phiếu nhập và cập nhật tồn kho!");
+    }
   }
 }
 
@@ -980,8 +1292,23 @@ function filterPricing() {
   const tbody = document.querySelector("#pricing-table tbody");
   tbody.innerHTML = filteredBooks
     .map((book) => {
-      // Giá nhập mặc định = 0 (không còn quản lý nhập hàng)
+      // Lấy giá nhập từ phiếu nhập mới nhất
+      const bookImports = imports.filter(
+        (imp) =>
+          imp.status === "completed" &&
+          imp.items.some((item) => item.product_id === book.id)
+      );
+
       let costPrice = 0;
+      if (bookImports.length > 0) {
+        const latestImport = bookImports.sort(
+          (a, b) => new Date(b.import_date) - new Date(a.import_date)
+        )[0];
+        const importItem = latestImport.items.find(
+          (item) => item.product_id === book.id
+        );
+        costPrice = importItem?.import_price || 0;
+      }
 
       // Lấy tỷ lệ lợi nhuận
       const categoryId = book.category_ids?.[0];
@@ -1444,26 +1771,32 @@ function logout() {
 
 // Lưu dữ liệu (mô phỏng - trong ứng dụng thực sẽ sử dụng API)
 function saveData(type, data) {
+  const key = normalizeKey(type);
+  console.log(`Đang lưu ${key}:`, data);
+  localStorage.setItem(key, JSON.stringify(data));
+
   // Trong ứng dụng thực, sẽ gọi API để lưu dữ liệu
   // Hiện tại chỉ log nó ra
   console.log(`Đang lưu ${type}:`, data);
-  
+
   // Lưu vào localStorage với key cho admin
   localStorage.setItem(`admin_${type}`, JSON.stringify(data));
-  
+
   // Đồng bộ dữ liệu sang trang user
   // Map key admin sang key user
   const userKeyMap = {
-    'books': 'BOOKS',
-    'categories': 'CATEGORIES',
-    'users': 'USERS',
-    'orders': 'orders',
-    'order_details': 'order_details',
-    'addresses': 'ALL_ADDRESSES'
+    books: "BOOKS",
+    categories: "CATEGORIES",
+    users: "USERS",
+    orders: "orders",
+    order_details: "order_details",
+    addresses: "ALL_ADDRESSES",
   };
-  
+
   if (userKeyMap[type]) {
     localStorage.setItem(userKeyMap[type], JSON.stringify(data));
-    console.log(`✅ Đã đồng bộ ${type} sang trang user với key ${userKeyMap[type]}`);
+    console.log(
+      `✅ Đã đồng bộ ${type} sang trang user với key ${userKeyMap[type]}`
+    );
   }
 }
